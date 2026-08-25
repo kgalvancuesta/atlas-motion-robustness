@@ -1,0 +1,3195 @@
+{
+  "config": {
+    "run_dir": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02",
+    "data_root": "/data/cs_courses/neuroimaging/atlas_clean/data",
+    "gt_deriv": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS",
+    "preds_bids": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids",
+    "pred_deriv": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction",
+    "splits_json": "/data/cs_courses/neuroimaging/atlas_clean/splits/cv/atlas_5fold_lesion_quartile_excluding_known_issues.json",
+    "cv_fold": 1,
+    "split_resolution": {
+      "format": "cv",
+      "fold_index": 1,
+      "split_key_used": "test_ids",
+      "split_key_reason": "CV fold 1: key 'test_ids'"
+    },
+    "limit": null,
+    "strict": false,
+    "sample_check": false
+  },
+  "summary": {
+    "split_requested": "test",
+    "split_key_used": "test_ids",
+    "split_key_reason": "CV fold 1: key 'test_ids'",
+    "cv_fold": 1,
+    "metric_mode": "training_compatible",
+    "metric_definition": {
+      "pred_threshold": 0.5,
+      "gt_threshold": 0.5,
+      "eps": 1e-06,
+      "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+    },
+    "n_subjects_in_split": 131,
+    "n_evaluated": 131,
+    "n_missing_pred": 0,
+    "n_missing_gt": 0,
+    "n_shape_mismatch": 0,
+    "n_affine_mismatch": 0,
+    "n_load_errors": 0,
+    "n_fallback_gt": 0,
+    "n_fallback_pred": 0,
+    "micro_dice": 0.7864700193261732,
+    "dice": {
+      "mean": 0.5024902879021041,
+      "std": 0.3054070713976592,
+      "min": 2.7040912900488332e-11,
+      "p25": 0.2535307399072825,
+      "median": 0.578882708262313,
+      "p75": 0.7848469944898965,
+      "max": 0.9296952251695693
+    },
+    "jaccard": {
+      "mean": 0.3900381527564658,
+      "std": 0.2706387755561777,
+      "min": 2.7040912900488332e-11,
+      "p25": 0.14519404199693137,
+      "median": 0.4073433710489796,
+      "p75": 0.6458838127536946,
+      "max": 0.8686266258291312
+    },
+    "precision": {
+      "mean": 0.5754414149313054,
+      "std": 0.3221576577290345,
+      "min": 2.7081189405105314e-11,
+      "p25": 0.3485066807129671,
+      "median": 0.7004985420092027,
+      "p75": 0.854056282291842,
+      "max": 1.0
+    },
+    "recall": {
+      "mean": 0.5362689725466016,
+      "std": 0.34327498007721674,
+      "min": 1.0431879823656176e-10,
+      "p25": 0.2012389146291606,
+      "median": 0.614830237032687,
+      "p75": 0.8639419223650493,
+      "max": 1.0
+    },
+    "abs_volume_diff_ratio": {
+      "mean": 6.087001047297242,
+      "std": 58.33732362942277,
+      "min": 0.0011680360882717357,
+      "p25": 0.1471162278390873,
+      "median": 0.43089940444033237,
+      "p75": 0.843914535987867,
+      "max": 670.3818059930582
+    },
+    "missing_pred_subjects_first20": [],
+    "missing_gt_subjects_first20": [],
+    "shape_mismatch_subjects_first20": [],
+    "affine_mismatch_subjects_first20": [],
+    "fallback_gt_subjects_first20": [],
+    "fallback_pred_subjects_first20": [],
+    "worst10_dice": [
+      {
+        "subject": "sub-r001s022",
+        "dice": 2.7040912900488332e-11
+      },
+      {
+        "subject": "sub-r040s049",
+        "dice": 9.912767643743777e-11
+      },
+      {
+        "subject": "sub-r001s038",
+        "dice": 1.4920919126391983e-10
+      },
+      {
+        "subject": "sub-r009s107",
+        "dice": 2.2426553033768432e-10
+      },
+      {
+        "subject": "sub-r049s020",
+        "dice": 3.593244698672927e-10
+      },
+      {
+        "subject": "sub-r009s066",
+        "dice": 7.092198576530354e-10
+      },
+      {
+        "subject": "sub-r038s007",
+        "dice": 1.0288065833036969e-09
+      },
+      {
+        "subject": "sub-r039s003",
+        "dice": 1.0893246175497552e-09
+      },
+      {
+        "subject": "sub-r014s015",
+        "dice": 1.7605633771821066e-09
+      },
+      {
+        "subject": "sub-r009s048",
+        "dice": 2.040816322365681e-09
+      }
+    ],
+    "best10_dice": [
+      {
+        "subject": "sub-r004s004",
+        "dice": 0.9296952251695693
+      },
+      {
+        "subject": "sub-r003s005",
+        "dice": 0.9164300356208489
+      },
+      {
+        "subject": "sub-r047s021",
+        "dice": 0.900080223309553
+      },
+      {
+        "subject": "sub-r048s018",
+        "dice": 0.8974676989094548
+      },
+      {
+        "subject": "sub-r023s017",
+        "dice": 0.8849131979606218
+      },
+      {
+        "subject": "sub-r011s025",
+        "dice": 0.8755068937803109
+      },
+      {
+        "subject": "sub-r001s025",
+        "dice": 0.8748707342439538
+      },
+      {
+        "subject": "sub-r005s074",
+        "dice": 0.8733053724462106
+      },
+      {
+        "subject": "sub-r042s028",
+        "dice": 0.8723978103651246
+      },
+      {
+        "subject": "sub-r010s013",
+        "dice": 0.8678787879188246
+      }
+    ]
+  },
+  "per_subject": [
+    {
+      "subject": "sub-r001s005",
+      "dice": 0.8298207637054321,
+      "jaccard": 0.7091398804324531,
+      "precision": 0.9231688051507275,
+      "recall": 0.7536172622120779,
+      "pred_voxels": 25953,
+      "gt_voxels": 31792,
+      "abs_volume_diff_ratio": 0.1836625566122401,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s005/ses-1/anat/sub-r001s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s005/ses-1/anat/sub-r001s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s017",
+      "dice": 0.4155075467844015,
+      "jaccard": 0.26223384413065604,
+      "precision": 0.7484008531466941,
+      "recall": 0.28758705477771934,
+      "pred_voxels": 938,
+      "gt_voxels": 2441,
+      "abs_volume_diff_ratio": 0.6157312574290327,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s017/ses-1/anat/sub-r001s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s017/ses-1/anat/sub-r001s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s020",
+      "dice": 0.7665560486734733,
+      "jaccard": 0.6214761909948084,
+      "precision": 0.8020218922149897,
+      "recall": 0.7340940128430513,
+      "pred_voxels": 71715,
+      "gt_voxels": 78351,
+      "abs_volume_diff_ratio": 0.08469579201178422,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s020/ses-1/anat/sub-r001s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s020/ses-1/anat/sub-r001s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s022",
+      "dice": 2.7040912900488332e-11,
+      "jaccard": 2.7040912900488332e-11,
+      "precision": 2.7081189405105314e-11,
+      "recall": 1.8181817851239675e-08,
+      "pred_voxels": 36926,
+      "gt_voxels": 55,
+      "abs_volume_diff_ratio": 670.3818059930582,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s022/ses-1/anat/sub-r001s022_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s022/ses-1/anat/sub-r001s022_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s025",
+      "dice": 0.8748707342439538,
+      "jaccard": 0.7775735294571948,
+      "precision": 0.8784033225938155,
+      "recall": 0.8713664454402914,
+      "pred_voxels": 4334,
+      "gt_voxels": 4369,
+      "abs_volume_diff_ratio": 0.008010986493932023,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s025/ses-1/anat/sub-r001s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s025/ses-1/anat/sub-r001s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s028",
+      "dice": 0.5846501133356093,
+      "jaccard": 0.4130781508563347,
+      "precision": 0.425287357265538,
+      "recall": 0.9350180507761081,
+      "pred_voxels": 609,
+      "gt_voxels": 277,
+      "abs_volume_diff_ratio": 1.1985559523517835,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s028/ses-1/anat/sub-r001s028_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s028/ses-1/anat/sub-r001s028_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s031",
+      "dice": 0.8097913436811444,
+      "jaccard": 0.6803776290707366,
+      "precision": 0.8884554165010937,
+      "recall": 0.7439241101828274,
+      "pred_voxels": 32041,
+      "gt_voxels": 38266,
+      "abs_volume_diff_ratio": 0.16267705011857322,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s031/ses-1/anat/sub-r001s031_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s031/ses-1/anat/sub-r001s031_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s034",
+      "dice": 0.4729378870635234,
+      "jaccard": 0.30970442079264865,
+      "precision": 0.6519823790462652,
+      "recall": 0.3710435602096385,
+      "pred_voxels": 1816,
+      "gt_voxels": 3191,
+      "abs_volume_diff_ratio": 0.43089940444033237,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s034/ses-1/anat/sub-r001s034_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s034/ses-1/anat/sub-r001s034_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s037",
+      "dice": 0.4971073402693269,
+      "jaccard": 0.3307670292120559,
+      "precision": 0.5319677790779301,
+      "recall": 0.4665347973733839,
+      "pred_voxels": 21725,
+      "gt_voxels": 24772,
+      "abs_volume_diff_ratio": 0.12300177619396892,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s037/ses-1/anat/sub-r001s037_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s037/ses-1/anat/sub-r001s037_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s038",
+      "dice": 1.4920919126391983e-10,
+      "jaccard": 1.4920919126391983e-10,
+      "precision": 1.5386982610342053e-10,
+      "recall": 4.9261083501176924e-09,
+      "pred_voxels": 6499,
+      "gt_voxels": 203,
+      "abs_volume_diff_ratio": 31.014778172340996,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s038/ses-1/anat/sub-r001s038_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s038/ses-1/anat/sub-r001s038_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r001s039",
+      "dice": 0.26192379439622654,
+      "jaccard": 0.15069753194071783,
+      "precision": 0.15356975485805816,
+      "recall": 0.8895927602809114,
+      "pred_voxels": 6401,
+      "gt_voxels": 1105,
+      "abs_volume_diff_ratio": 4.792760176658135,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r001s039/ses-1/anat/sub-r001s039_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r001s039/ses-1/anat/sub-r001s039_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r002s006",
+      "dice": 0.6773709287975682,
+      "jaccard": 0.5121397552470016,
+      "precision": 0.9273799594943775,
+      "recall": 0.5335366898744375,
+      "pred_voxels": 16786,
+      "gt_voxels": 29177,
+      "abs_volume_diff_ratio": 0.4246838262869834,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r002s006/ses-1/anat/sub-r002s006_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r002s006/ses-1/anat/sub-r002s006_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r002s009",
+      "dice": 0.8575651565518841,
+      "jaccard": 0.7506468850037412,
+      "precision": 0.8339059736046757,
+      "recall": 0.8826060344227946,
+      "pred_voxels": 58792,
+      "gt_voxels": 55548,
+      "abs_volume_diff_ratio": 0.05839994239111399,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r002s009/ses-1/anat/sub-r002s009_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r002s009/ses-1/anat/sub-r002s009_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r003s005",
+      "dice": 0.9164300356208489,
+      "jaccard": 0.8457506813104185,
+      "precision": 0.8890958216343875,
+      "recall": 0.9454982773193548,
+      "pred_voxels": 245383,
+      "gt_voxels": 230745,
+      "abs_volume_diff_ratio": 0.06343799432246229,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r003s005/ses-1/anat/sub-r003s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r003s005/ses-1/anat/sub-r003s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r003s010",
+      "dice": 0.41825902397212417,
+      "jaccard": 0.2644295311886852,
+      "precision": 0.33848797364520966,
+      "recall": 0.5472222234799383,
+      "pred_voxels": 582,
+      "gt_voxels": 360,
+      "abs_volume_diff_ratio": 0.6166666649537037,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r003s010/ses-1/anat/sub-r003s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r003s010/ses-1/anat/sub-r003s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r003s011",
+      "dice": 0.8033351601110414,
+      "jaccard": 0.6713117435609217,
+      "precision": 0.8303795419737493,
+      "recall": 0.7779968155449241,
+      "pred_voxels": 12357,
+      "gt_voxels": 13189,
+      "abs_volume_diff_ratio": 0.06308287208559535,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r003s011/ses-1/anat/sub-r003s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r003s011/ses-1/anat/sub-r003s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r003s013",
+      "dice": 0.8133426313451103,
+      "jaccard": 0.6854064642815468,
+      "precision": 0.7101684595382415,
+      "recall": 0.951590970906773,
+      "pred_voxels": 9854,
+      "gt_voxels": 7354,
+      "abs_volume_diff_ratio": 0.3399510470029982,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r003s013/ses-1/anat/sub-r003s013_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r003s013/ses-1/anat/sub-r003s013_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s002",
+      "dice": 0.8564048972390895,
+      "jaccard": 0.7488707280869411,
+      "precision": 0.7799770954596388,
+      "recall": 0.9494376730789624,
+      "pred_voxels": 64616,
+      "gt_voxels": 53083,
+      "abs_volume_diff_ratio": 0.21726353069311713,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s002/ses-1/anat/sub-r004s002_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s002/ses-1/anat/sub-r004s002_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s004",
+      "dice": 0.9296952251695693,
+      "jaccard": 0.8686266258291312,
+      "precision": 0.9420380529236613,
+      "recall": 0.9176716523380118,
+      "pred_voxels": 330855,
+      "gt_voxels": 339640,
+      "abs_volume_diff_ratio": 0.02586562242366663,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s004/ses-1/anat/sub-r004s004_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s004/ses-1/anat/sub-r004s004_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s006",
+      "dice": 0.6045303533914509,
+      "jaccard": 0.43320924600179994,
+      "precision": 0.4680134680632236,
+      "recall": 0.8534879754641842,
+      "pred_voxels": 10692,
+      "gt_voxels": 5863,
+      "abs_volume_diff_ratio": 0.8236397747188061,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s006/ses-1/anat/sub-r004s006_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s006/ses-1/anat/sub-r004s006_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s013",
+      "dice": 0.866611589122409,
+      "jaccard": 0.7646201256398647,
+      "precision": 0.8671182977826107,
+      "recall": 0.8661054723179998,
+      "pred_voxels": 74397,
+      "gt_voxels": 74484,
+      "abs_volume_diff_ratio": 0.0011680360882717357,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s013/ses-1/anat/sub-r004s013_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s013/ses-1/anat/sub-r004s013_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s023",
+      "dice": 0.7492708627366506,
+      "jaccard": 0.599067248389431,
+      "precision": 0.6294767533832842,
+      "recall": 0.9253769882275,
+      "pred_voxels": 56933,
+      "gt_voxels": 38728,
+      "abs_volume_diff_ratio": 0.4700733319440696,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s023/ses-1/anat/sub-r004s023_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s023/ses-1/anat/sub-r004s023_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s026",
+      "dice": 0.7841480344572265,
+      "jaccard": 0.6449370948779134,
+      "precision": 0.7806611669589868,
+      "recall": 0.7876661902924285,
+      "pred_voxels": 116491,
+      "gt_voxels": 115455,
+      "abs_volume_diff_ratio": 0.008973193018847402,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s026/ses-1/anat/sub-r004s026_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s026/ses-1/anat/sub-r004s026_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r004s028",
+      "dice": 0.8250871743294537,
+      "jaccard": 0.7022539513606756,
+      "precision": 0.8930431711854707,
+      "recall": 0.7667420442946709,
+      "pred_voxels": 67962,
+      "gt_voxels": 79157,
+      "abs_volume_diff_ratio": 0.14142779539217723,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r004s028/ses-1/anat/sub-r004s028_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r004s028/ses-1/anat/sub-r004s028_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r005s015",
+      "dice": 0.8091483422304665,
+      "jaccard": 0.6794703076169223,
+      "precision": 0.8033520218312015,
+      "recall": 0.8150289133730086,
+      "pred_voxels": 503875,
+      "gt_voxels": 496656,
+      "abs_volume_diff_ratio": 0.014535211494445782,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r005s015/ses-1/anat/sub-r005s015_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r005s015/ses-1/anat/sub-r005s015_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r005s045",
+      "dice": 0.5152643339424688,
+      "jaccard": 0.34704112402503395,
+      "precision": 0.35234215951899983,
+      "recall": 0.9584487535777043,
+      "pred_voxels": 982,
+      "gt_voxels": 361,
+      "abs_volume_diff_ratio": 1.7202216018830427,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r005s045/ses-1/anat/sub-r005s045_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r005s045/ses-1/anat/sub-r005s045_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r005s073",
+      "dice": 0.5889487873389833,
+      "jaccard": 0.41738299960135333,
+      "precision": 0.42222222278046156,
+      "recall": 0.9732739421530647,
+      "pred_voxels": 1035,
+      "gt_voxels": 449,
+      "abs_volume_diff_ratio": 1.3051224915253397,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r005s073/ses-1/anat/sub-r005s073_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r005s073/ses-1/anat/sub-r005s073_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r005s074",
+      "dice": 0.8733053724462106,
+      "jaccard": 0.7751038756106761,
+      "precision": 0.8461514146979721,
+      "recall": 0.9022599155695616,
+      "pred_voxels": 253093,
+      "gt_voxels": 237354,
+      "abs_volume_diff_ratio": 0.06631023702964217,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r005s074/ses-1/anat/sub-r005s074_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r005s074/ses-1/anat/sub-r005s074_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s008",
+      "dice": 0.26868451696522877,
+      "jaccard": 0.15519096299688126,
+      "precision": 0.47509263092832754,
+      "recall": 0.18730725544760474,
+      "pred_voxels": 2429,
+      "gt_voxels": 6161,
+      "abs_volume_diff_ratio": 0.6057458203853683,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s008/ses-1/anat/sub-r009s008_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s008/ses-1/anat/sub-r009s008_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s011",
+      "dice": 0.2218881540556392,
+      "jaccard": 0.12478863728021834,
+      "precision": 0.384375000320638,
+      "recall": 0.15595942536856308,
+      "pred_voxels": 1920,
+      "gt_voxels": 4732,
+      "abs_volume_diff_ratio": 0.5942519018186281,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s011/ses-1/anat/sub-r009s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s011/ses-1/anat/sub-r009s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s017",
+      "dice": 0.003468208668515486,
+      "jaccard": 0.001737116964830853,
+      "precision": 0.00824176096636879,
+      "recall": 0.0021961939954639868,
+      "pred_voxels": 364,
+      "gt_voxels": 1366,
+      "abs_volume_diff_ratio": 0.7335285499754549,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s017/ses-1/anat/sub-r009s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s017/ses-1/anat/sub-r009s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s020",
+      "dice": 0.369993643121428,
+      "jaccard": 0.22698908016615515,
+      "precision": 0.6978417273433052,
+      "recall": 0.2517301044535206,
+      "pred_voxels": 417,
+      "gt_voxels": 1156,
+      "abs_volume_diff_ratio": 0.6392733558483794,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s020/ses-1/anat/sub-r009s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s020/ses-1/anat/sub-r009s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s022",
+      "dice": 0.45408075121742586,
+      "jaccard": 0.2937286352972163,
+      "precision": 0.7004985420092027,
+      "recall": 0.3359144764639455,
+      "pred_voxels": 31893,
+      "gt_voxels": 66508,
+      "abs_volume_diff_ratio": 0.5204637036067772,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s022/ses-1/anat/sub-r009s022_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s022/ses-1/anat/sub-r009s022_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s024",
+      "dice": 0.013298928244015589,
+      "jaccard": 0.006693975521361376,
+      "precision": 0.11472602891314036,
+      "recall": 0.007058575747254679,
+      "pred_voxels": 584,
+      "gt_voxels": 9492,
+      "abs_volume_diff_ratio": 0.9384745047473162,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s024/ses-1/anat/sub-r009s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s024/ses-1/anat/sub-r009s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s029",
+      "dice": 0.516144200664879,
+      "jaccard": 0.3478398648623809,
+      "precision": 0.9906738868860788,
+      "recall": 0.348982619823126,
+      "pred_voxels": 3324,
+      "gt_voxels": 9436,
+      "abs_volume_diff_ratio": 0.6477320897999436,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s029/ses-1/anat/sub-r009s029_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s029/ses-1/anat/sub-r009s029_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s030",
+      "dice": 0.03097345163369992,
+      "jaccard": 0.015730337394629104,
+      "precision": 0.028857479959447888,
+      "recall": 0.03342428442467647,
+      "pred_voxels": 1698,
+      "gt_voxels": 1466,
+      "abs_volume_diff_ratio": 0.15825375159737123,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s030/ses-1/anat/sub-r009s030_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s030/ses-1/anat/sub-r009s030_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s046",
+      "dice": 0.005885238349247063,
+      "jaccard": 0.0029513039828080157,
+      "precision": 0.046153853491124205,
+      "recall": 0.0031430073320361405,
+      "pred_voxels": 130,
+      "gt_voxels": 1909,
+      "abs_volume_diff_ratio": 0.9319015186317959,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s046/ses-1/anat/sub-r009s046_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s046/ses-1/anat/sub-r009s046_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s048",
+      "dice": 2.040816322365681e-09,
+      "jaccard": 2.040816322365681e-09,
+      "precision": 2.3255813412655503e-08,
+      "recall": 2.237136460319605e-09,
+      "pred_voxels": 43,
+      "gt_voxels": 447,
+      "abs_volume_diff_ratio": 0.9038031299691205,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s048/ses-1/anat/sub-r009s048_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s048/ses-1/anat/sub-r009s048_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s057",
+      "dice": 0.32567049937611015,
+      "jaccard": 0.19450801099654916,
+      "precision": 0.21039604155842564,
+      "recall": 0.7203389854208561,
+      "pred_voxels": 404,
+      "gt_voxels": 118,
+      "abs_volume_diff_ratio": 2.4237287930192477,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s057/ses-1/anat/sub-r009s057_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s057/ses-1/anat/sub-r009s057_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s061",
+      "dice": 0.091592128963937,
+      "jaccard": 0.04799400092838507,
+      "precision": 0.051230738632933606,
+      "recall": 0.43170320500555953,
+      "pred_voxels": 4997,
+      "gt_voxels": 593,
+      "abs_volume_diff_ratio": 7.426644169600937,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s061/ses-1/anat/sub-r009s061_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s061/ses-1/anat/sub-r009s061_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s066",
+      "dice": 7.092198576530354e-10,
+      "jaccard": 7.092198576530354e-10,
+      "precision": 3.124999902343753e-08,
+      "recall": 7.256894044080628e-10,
+      "pred_voxels": 32,
+      "gt_voxels": 1378,
+      "abs_volume_diff_ratio": 0.9767779383332525,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s066/ses-1/anat/sub-r009s066_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s066/ses-1/anat/sub-r009s066_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s071",
+      "dice": 0.32284041008000725,
+      "jaccard": 0.19249236159046434,
+      "precision": 0.37563884183320323,
+      "recall": 0.28305519920312733,
+      "pred_voxels": 2348,
+      "gt_voxels": 3116,
+      "abs_volume_diff_ratio": 0.2464698330402857,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s071/ses-1/anat/sub-r009s071_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s071/ses-1/anat/sub-r009s071_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s072",
+      "dice": 0.7547218462093263,
+      "jaccard": 0.6060668806702488,
+      "precision": 0.8804331478597635,
+      "recall": 0.6604241877639413,
+      "pred_voxels": 6649,
+      "gt_voxels": 8864,
+      "abs_volume_diff_ratio": 0.2498871840873322,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s072/ses-1/anat/sub-r009s072_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s072/ses-1/anat/sub-r009s072_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s085",
+      "dice": 0.3831615120435499,
+      "jaccard": 0.2369819341372176,
+      "precision": 0.9025018395998894,
+      "recall": 0.24320840771884433,
+      "pred_voxels": 8154,
+      "gt_voxels": 30258,
+      "abs_volume_diff_ratio": 0.7305175490537869,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s085/ses-1/anat/sub-r009s085_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s085/ses-1/anat/sub-r009s085_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s091",
+      "dice": 0.48780487813801304,
+      "jaccard": 0.32258064531737773,
+      "precision": 0.32258064531737773,
+      "recall": 1.0,
+      "pred_voxels": 4340,
+      "gt_voxels": 1400,
+      "abs_volume_diff_ratio": 2.0999999985,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s091/ses-1/anat/sub-r009s091_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s091/ses-1/anat/sub-r009s091_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s094",
+      "dice": 0.36592929514866046,
+      "jaccard": 0.2239372471599349,
+      "precision": 0.3743654824981534,
+      "recall": 0.35786494162641935,
+      "pred_voxels": 2364,
+      "gt_voxels": 2473,
+      "abs_volume_diff_ratio": 0.0440760210092697,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s094/ses-1/anat/sub-r009s094_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s094/ses-1/anat/sub-r009s094_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s099",
+      "dice": 2.217294895305333e-09,
+      "jaccard": 2.217294895305333e-09,
+      "precision": 1.2499998437500196e-07,
+      "recall": 2.2573363380195565e-09,
+      "pred_voxels": 8,
+      "gt_voxels": 443,
+      "abs_volume_diff_ratio": 0.9819413070385072,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s099/ses-1/anat/sub-r009s099_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s099/ses-1/anat/sub-r009s099_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s105",
+      "dice": 0.15027513765379938,
+      "jaccard": 0.08124188672855454,
+      "precision": 0.7972399152895542,
+      "recall": 0.08295592631360257,
+      "pred_voxels": 942,
+      "gt_voxels": 9053,
+      "abs_volume_diff_ratio": 0.8959460951180883,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s105/ses-1/anat/sub-r009s105_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s105/ses-1/anat/sub-r009s105_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s107",
+      "dice": 2.2426553033768432e-10,
+      "jaccard": 2.2426553033768432e-10,
+      "precision": 2.1276595291987334e-08,
+      "recall": 2.266545783711118e-10,
+      "pred_voxels": 47,
+      "gt_voxels": 4412,
+      "abs_volume_diff_ratio": 0.989347234589903,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s107/ses-1/anat/sub-r009s107_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s107/ses-1/anat/sub-r009s107_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s108",
+      "dice": 0.6103799642595644,
+      "jaccard": 0.43924234579767085,
+      "precision": 0.9411280509648154,
+      "recall": 0.45165223963568885,
+      "pred_voxels": 27942,
+      "gt_voxels": 58224,
+      "abs_volume_diff_ratio": 0.5200948062565249,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s108/ses-1/anat/sub-r009s108_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s108/ses-1/anat/sub-r009s108_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s120",
+      "dice": 0.08735213913798712,
+      "jaccard": 0.045670790632092485,
+      "precision": 0.18181818491735535,
+      "recall": 0.0574850310688802,
+      "pred_voxels": 264,
+      "gt_voxels": 835,
+      "abs_volume_diff_ratio": 0.6838323345103804,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s120/ses-1/anat/sub-r009s120_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s120/ses-1/anat/sub-r009s120_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s121",
+      "dice": 0.7307503679594162,
+      "jaccard": 0.5757341579785671,
+      "precision": 0.6841138662221176,
+      "recall": 0.7842105265429363,
+      "pred_voxels": 1089,
+      "gt_voxels": 950,
+      "abs_volume_diff_ratio": 0.1463157893196676,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s121/ses-1/anat/sub-r009s121_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s121/ses-1/anat/sub-r009s121_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s122",
+      "dice": 1.3698629949333836e-08,
+      "jaccard": 1.3698629949333836e-08,
+      "precision": 1.0,
+      "recall": 1.3698629949333836e-08,
+      "pred_voxels": 0,
+      "gt_voxels": 73,
+      "abs_volume_diff_ratio": 0.9999999863013701,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s122/ses-1/anat/sub-r009s122_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s122/ses-1/anat/sub-r009s122_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r009s123",
+      "dice": 0.3170902964025993,
+      "jaccard": 0.18841789065613854,
+      "precision": 0.6024546426881245,
+      "recall": 0.2151705738107165,
+      "pred_voxels": 1874,
+      "gt_voxels": 5247,
+      "abs_volume_diff_ratio": 0.642843529513466,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r009s123/ses-1/anat/sub-r009s123_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r009s123/ses-1/anat/sub-r009s123_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r010s012",
+      "dice": 0.6212121214990817,
+      "jaccard": 0.45054945115324235,
+      "precision": 0.8523908526977321,
+      "recall": 0.48867699703375805,
+      "pred_voxels": 481,
+      "gt_voxels": 839,
+      "abs_volume_diff_ratio": 0.426698450027773,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r010s012/ses-1/anat/sub-r010s012_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r010s012/ses-1/anat/sub-r010s012_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r010s013",
+      "dice": 0.8678787879188246,
+      "jaccard": 0.7665952892041781,
+      "precision": 0.8196908987866681,
+      "recall": 0.9220862846606013,
+      "pred_voxels": 1747,
+      "gt_voxels": 1553,
+      "abs_volume_diff_ratio": 0.12491951054415999,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r010s013/ses-1/anat/sub-r010s013_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r010s013/ses-1/anat/sub-r010s013_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r010s018",
+      "dice": 0.7343984024627064,
+      "jaccard": 0.5802761342878596,
+      "precision": 0.9030079804155875,
+      "recall": 0.618847286655933,
+      "pred_voxels": 1629,
+      "gt_voxels": 2377,
+      "abs_volume_diff_ratio": 0.31468237260635995,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r010s018/ses-1/anat/sub-r010s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r010s018/ses-1/anat/sub-r010s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r010s026",
+      "dice": 0.6927609428902523,
+      "jaccard": 0.5299420479523875,
+      "precision": 0.534415584717912,
+      "recall": 0.984449760784151,
+      "pred_voxels": 1540,
+      "gt_voxels": 836,
+      "abs_volume_diff_ratio": 0.8421052621505918,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r010s026/ses-1/anat/sub-r010s026_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r010s026/ses-1/anat/sub-r010s026_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r010s027",
+      "dice": 0.6269137793606311,
+      "jaccard": 0.4565727702719643,
+      "precision": 0.47208737896111197,
+      "recall": 0.93285371710689,
+      "pred_voxels": 1648,
+      "gt_voxels": 834,
+      "abs_volume_diff_ratio": 0.9760191834819913,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r010s027/ses-1/anat/sub-r010s027_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r010s027/ses-1/anat/sub-r010s027_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r011s020",
+      "dice": 0.8049327354624565,
+      "jaccard": 0.6735459663309737,
+      "precision": 0.7810007252425668,
+      "recall": 0.830377794976724,
+      "pred_voxels": 2758,
+      "gt_voxels": 2594,
+      "abs_volume_diff_ratio": 0.06322282187231194,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r011s020/ses-1/anat/sub-r011s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r011s020/ses-1/anat/sub-r011s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r011s024",
+      "dice": 0.5451402229071954,
+      "jaccard": 0.3747029312451273,
+      "precision": 0.9692622951029629,
+      "recall": 0.37920897932143005,
+      "pred_voxels": 1464,
+      "gt_voxels": 3742,
+      "abs_volume_diff_ratio": 0.6087653659516928,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r011s024/ses-1/anat/sub-r011s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r011s024/ses-1/anat/sub-r011s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r011s025",
+      "dice": 0.8755068937803109,
+      "jaccard": 0.7785791562284243,
+      "precision": 0.8848360656209688,
+      "recall": 0.8663723917069132,
+      "pred_voxels": 2440,
+      "gt_voxels": 2492,
+      "abs_volume_diff_ratio": 0.020866773667388937,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r011s025/ses-1/anat/sub-r011s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r011s025/ses-1/anat/sub-r011s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r011s034",
+      "dice": 0.7502067825681528,
+      "jaccard": 0.6002647256120022,
+      "precision": 0.7570951588004213,
+      "recall": 0.7434426231611125,
+      "pred_voxels": 1198,
+      "gt_voxels": 1220,
+      "abs_volume_diff_ratio": 0.018032786870464928,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r011s034/ses-1/anat/sub-r011s034_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r011s034/ses-1/anat/sub-r011s034_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r014s004",
+      "dice": 3.3112582671812637e-09,
+      "jaccard": 3.3112582671812637e-09,
+      "precision": 1.2345678859929891e-08,
+      "recall": 4.524886857353453e-09,
+      "pred_voxels": 81,
+      "gt_voxels": 221,
+      "abs_volume_diff_ratio": 0.6334841600294835,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r014s004/ses-1/anat/sub-r014s004_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r014s004/ses-1/anat/sub-r014s004_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r014s015",
+      "dice": 1.7605633771821066e-09,
+      "jaccard": 1.7605633771821066e-09,
+      "precision": 3.0769230674556214e-09,
+      "recall": 4.115226320513472e-09,
+      "pred_voxels": 325,
+      "gt_voxels": 243,
+      "abs_volume_diff_ratio": 0.3374485582821047,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r014s015/ses-1/anat/sub-r014s015_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r014s015/ses-1/anat/sub-r014s015_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r015s001",
+      "dice": 0.8142002422172658,
+      "jaccard": 0.6866254077715123,
+      "precision": 0.7182447300533136,
+      "recall": 0.939747976302272,
+      "pred_voxels": 31357,
+      "gt_voxels": 23966,
+      "abs_volume_diff_ratio": 0.3083952265581075,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r015s001/ses-1/anat/sub-r015s001_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r015s001/ses-1/anat/sub-r015s001_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r018s007",
+      "dice": 0.6119654371718678,
+      "jaccard": 0.4408863104464454,
+      "precision": 0.9273847640932947,
+      "recall": 0.4566507518710061,
+      "pred_voxels": 33106,
+      "gt_voxels": 67233,
+      "abs_volume_diff_ratio": 0.5075929974788037,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r018s007/ses-1/anat/sub-r018s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r018s007/ses-1/anat/sub-r018s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r018s010",
+      "dice": 0.4619883043183007,
+      "jaccard": 0.3003802285169037,
+      "precision": 0.30401319444529235,
+      "recall": 0.9617391305013232,
+      "pred_voxels": 1819,
+      "gt_voxels": 575,
+      "abs_volume_diff_ratio": 2.1634782571069944,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r018s010/ses-1/anat/sub-r018s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r018s010/ses-1/anat/sub-r018s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r019s012",
+      "dice": 0.8394487202721588,
+      "jaccard": 0.7233189390119312,
+      "precision": 0.8574040219899802,
+      "recall": 0.8222300140875771,
+      "pred_voxels": 2735,
+      "gt_voxels": 2852,
+      "abs_volume_diff_ratio": 0.041023842902866814,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r019s012/ses-1/anat/sub-r019s012_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r019s012/ses-1/anat/sub-r019s012_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r023s017",
+      "dice": 0.8849131979606218,
+      "jaccard": 0.793582343852485,
+      "precision": 0.8557217118859521,
+      "recall": 0.9161666603139849,
+      "pred_voxels": 140430,
+      "gt_voxels": 131165,
+      "abs_volume_diff_ratio": 0.07063622155246722,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r023s017/ses-1/anat/sub-r023s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r023s017/ses-1/anat/sub-r023s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r024s002",
+      "dice": 0.8231977108193101,
+      "jaccard": 0.6995208272357264,
+      "precision": 0.8581565875593913,
+      "recall": 0.7909755979409976,
+      "pred_voxels": 114147,
+      "gt_voxels": 123842,
+      "abs_volume_diff_ratio": 0.07828523441095683,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r024s002/ses-1/anat/sub-r024s002_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r024s002/ses-1/anat/sub-r024s002_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r024s008",
+      "dice": 0.029456031065420767,
+      "jaccard": 0.014948172502460645,
+      "precision": 0.03587326550513924,
+      "recall": 0.024986321534746246,
+      "pred_voxels": 3819,
+      "gt_voxels": 5483,
+      "abs_volume_diff_ratio": 0.3034834943820019,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r024s008/ses-1/anat/sub-r024s008_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r024s008/ses-1/anat/sub-r024s008_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r027s031",
+      "dice": 0.8379373659027999,
+      "jaccard": 0.7210776263839059,
+      "precision": 0.7929502947972262,
+      "recall": 0.8883360307960245,
+      "pred_voxels": 102444,
+      "gt_voxels": 91444,
+      "abs_volume_diff_ratio": 0.12029220068981791,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r027s031/ses-1/anat/sub-r027s031_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r027s031/ses-1/anat/sub-r027s031_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r027s032",
+      "dice": 0.12491444221281574,
+      "jaccard": 0.06661799604145416,
+      "precision": 0.0679828646508982,
+      "recall": 0.7684210527940905,
+      "pred_voxels": 16107,
+      "gt_voxels": 1425,
+      "abs_volume_diff_ratio": 10.303157887506556,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r027s032/ses-1/anat/sub-r027s032_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r027s032/ses-1/anat/sub-r027s032_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r027s048",
+      "dice": 0.8520896586157732,
+      "jaccard": 0.7422963518118286,
+      "precision": 0.7892765323821892,
+      "recall": 0.925764966741083,
+      "pred_voxels": 171922,
+      "gt_voxels": 146575,
+      "abs_volume_diff_ratio": 0.1729285348785746,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r027s048/ses-1/anat/sub-r027s048_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r027s048/ses-1/anat/sub-r027s048_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r027s050",
+      "dice": 0.7232166711317474,
+      "jaccard": 0.5664364930204062,
+      "precision": 0.7878346915223288,
+      "recall": 0.6683950617556876,
+      "pred_voxels": 10308,
+      "gt_voxels": 12150,
+      "abs_volume_diff_ratio": 0.15160493825912716,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r027s050/ses-1/anat/sub-r027s050_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r027s050/ses-1/anat/sub-r027s050_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r028s009",
+      "dice": 0.41572649577643367,
+      "jaccard": 0.2624082866570556,
+      "precision": 0.34467120190693434,
+      "recall": 0.5236864772774146,
+      "pred_voxels": 7056,
+      "gt_voxels": 4644,
+      "abs_volume_diff_ratio": 0.5193798448494014,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r028s009/ses-1/anat/sub-r028s009_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r028s009/ses-1/anat/sub-r028s009_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r028s017",
+      "dice": 0.46871517282777975,
+      "jaccard": 0.30609274291825894,
+      "precision": 0.4595691540869282,
+      "recall": 0.4782326187530109,
+      "pred_voxels": 3203,
+      "gt_voxels": 3078,
+      "abs_volume_diff_ratio": 0.04061078621162743,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r028s017/ses-1/anat/sub-r028s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r028s017/ses-1/anat/sub-r028s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r029s007",
+      "dice": 0.47120294854170136,
+      "jaccard": 0.30821811704991636,
+      "precision": 0.9306554405700371,
+      "recall": 0.31546297765745474,
+      "pred_voxels": 17103,
+      "gt_voxels": 50456,
+      "abs_volume_diff_ratio": 0.6610313936764501,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r029s007/ses-1/anat/sub-r029s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r029s007/ses-1/anat/sub-r029s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r031s017",
+      "dice": 0.7169312171184318,
+      "jaccard": 0.5587628870528217,
+      "precision": 0.6585662215570277,
+      "recall": 0.7866473152588573,
+      "pred_voxels": 823,
+      "gt_voxels": 689,
+      "abs_volume_diff_ratio": 0.19448476024022532,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r031s017/ses-1/anat/sub-r031s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r031s017/ses-1/anat/sub-r031s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r031s020",
+      "dice": 0.6507233930335784,
+      "jaccard": 0.4822757540655821,
+      "precision": 0.8983947464614384,
+      "recall": 0.5100983946649302,
+      "pred_voxels": 5482,
+      "gt_voxels": 9655,
+      "abs_volume_diff_ratio": 0.4322112894425467,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r031s020/ses-1/anat/sub-r031s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r031s020/ses-1/anat/sub-r031s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r031s024",
+      "dice": 0.6802687158115207,
+      "jaccard": 0.515460021270451,
+      "precision": 0.9350014996385877,
+      "recall": 0.5346170807110927,
+      "pred_voxels": 23339,
+      "gt_voxels": 40818,
+      "abs_volume_diff_ratio": 0.4282179430538435,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r031s024/ses-1/anat/sub-r031s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r031s024/ses-1/anat/sub-r031s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r031s025",
+      "dice": 0.1833596124589621,
+      "jaccard": 0.10093335683662649,
+      "precision": 0.8639104220792613,
+      "recall": 0.10256410258704492,
+      "pred_voxels": 4644,
+      "gt_voxels": 39117,
+      "abs_volume_diff_ratio": 0.8812792391829313,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r031s025/ses-1/anat/sub-r031s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r031s025/ses-1/anat/sub-r031s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r031s037",
+      "dice": 0.6886895646693875,
+      "jaccard": 0.5251918585780011,
+      "precision": 0.725122850165061,
+      "recall": 0.6557422580675264,
+      "pred_voxels": 6512,
+      "gt_voxels": 7201,
+      "abs_volume_diff_ratio": 0.0956811553817968,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r031s037/ses-1/anat/sub-r031s037_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r031s037/ses-1/anat/sub-r031s037_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r034s025",
+      "dice": 0.8059531709350694,
+      "jaccard": 0.6749761829668187,
+      "precision": 0.7040410732520634,
+      "recall": 0.9423631124047078,
+      "pred_voxels": 6038,
+      "gt_voxels": 4511,
+      "abs_volume_diff_ratio": 0.3385058744538892,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r034s025/ses-1/anat/sub-r034s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r034s025/ses-1/anat/sub-r034s025_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r034s026",
+      "dice": 0.8325168979369066,
+      "jaccard": 0.7130868930501936,
+      "precision": 0.7395173593483946,
+      "recall": 0.9522718140289574,
+      "pred_voxels": 86524,
+      "gt_voxels": 67193,
+      "abs_volume_diff_ratio": 0.2876936585613428,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r034s026/ses-1/anat/sub-r034s026_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r034s026/ses-1/anat/sub-r034s026_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r034s036",
+      "dice": 0.4294478562610561,
+      "jaccard": 0.27343750567626945,
+      "precision": 0.7608695704158789,
+      "recall": 0.2991453051355102,
+      "pred_voxels": 46,
+      "gt_voxels": 117,
+      "abs_volume_diff_ratio": 0.6068376016509607,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r034s036/ses-1/anat/sub-r034s036_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r034s036/ses-1/anat/sub-r034s036_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r035s005",
+      "dice": 0.7855459545225665,
+      "jaccard": 0.6468305306294757,
+      "precision": 0.7209805337267624,
+      "recall": 0.8628127697473573,
+      "pred_voxels": 1387,
+      "gt_voxels": 1159,
+      "abs_volume_diff_ratio": 0.19672131130567616,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r035s005/ses-1/anat/sub-r035s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r035s005/ses-1/anat/sub-r035s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r035s011",
+      "dice": 0.3145539908401898,
+      "jaccard": 0.18662952678606068,
+      "precision": 0.4358736064722364,
+      "recall": 0.2460650581080456,
+      "pred_voxels": 1076,
+      "gt_voxels": 1906,
+      "abs_volume_diff_ratio": 0.4354669462563132,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r035s011/ses-1/anat/sub-r035s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r035s011/ses-1/anat/sub-r035s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r035s012",
+      "dice": 0.578882708262313,
+      "jaccard": 0.4073433710489796,
+      "precision": 0.6892166423009419,
+      "recall": 0.4989998235130023,
+      "pred_voxels": 24612,
+      "gt_voxels": 33994,
+      "abs_volume_diff_ratio": 0.2759898805590401,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r035s012/ses-1/anat/sub-r035s012_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r035s012/ses-1/anat/sub-r035s012_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s007",
+      "dice": 1.0288065833036969e-09,
+      "jaccard": 1.0288065833036969e-09,
+      "precision": 2.0449897708691414e-09,
+      "recall": 2.070393370454672e-09,
+      "pred_voxels": 489,
+      "gt_voxels": 483,
+      "abs_volume_diff_ratio": 0.012422360222728033,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s007/ses-1/anat/sub-r038s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s007/ses-1/anat/sub-r038s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s010",
+      "dice": 0.5583448277080428,
+      "jaccard": 0.3872942979765426,
+      "precision": 0.40773569725715725,
+      "recall": 0.88538932643448,
+      "pred_voxels": 2482,
+      "gt_voxels": 1143,
+      "abs_volume_diff_ratio": 1.1714785641544367,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s010/ses-1/anat/sub-r038s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s010/ses-1/anat/sub-r038s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s023",
+      "dice": 0.38392979577897574,
+      "jaccard": 0.23756999843245036,
+      "precision": 0.27089783295841763,
+      "recall": 0.6588235295723184,
+      "pred_voxels": 5168,
+      "gt_voxels": 2125,
+      "abs_volume_diff_ratio": 1.4319999993261177,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s023/ses-1/anat/sub-r038s023_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s023/ses-1/anat/sub-r038s023_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s036",
+      "dice": 0.6747820226749176,
+      "jaccard": 0.50918568434879,
+      "precision": 0.8780006576917679,
+      "recall": 0.5479545765803835,
+      "pred_voxels": 9123,
+      "gt_voxels": 14618,
+      "abs_volume_diff_ratio": 0.37590641672076164,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s036/ses-1/anat/sub-r038s036_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s036/ses-1/anat/sub-r038s036_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s047",
+      "dice": 0.3876797512730328,
+      "jaccard": 0.24044835484230348,
+      "precision": 0.27132397943488173,
+      "recall": 0.6787638219632116,
+      "pred_voxels": 44117,
+      "gt_voxels": 17635,
+      "abs_volume_diff_ratio": 1.5016728096681784,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s047/ses-1/anat/sub-r038s047_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s047/ses-1/anat/sub-r038s047_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s058",
+      "dice": 0.04854369047506833,
+      "jaccard": 0.02487562310338853,
+      "precision": 0.07272727609917355,
+      "recall": 0.03642987425058311,
+      "pred_voxels": 275,
+      "gt_voxels": 549,
+      "abs_volume_diff_ratio": 0.49908925227852596,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s058/ses-1/anat/sub-r038s058_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s058/ses-1/anat/sub-r038s058_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s064",
+      "dice": 0.5169696970062901,
+      "jaccard": 0.3485901104057427,
+      "precision": 0.5186986926849044,
+      "recall": 0.5152521897439969,
+      "pred_voxels": 6578,
+      "gt_voxels": 6622,
+      "abs_volume_diff_ratio": 0.006644518271421848,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s064/ses-1/anat/sub-r038s064_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s064/ses-1/anat/sub-r038s064_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r038s067",
+      "dice": 0.08651766418772212,
+      "jaccard": 0.04521477033812834,
+      "precision": 0.0696459666077638,
+      "recall": 0.11417697473159992,
+      "pred_voxels": 3446,
+      "gt_voxels": 2102,
+      "abs_volume_diff_ratio": 0.6393910558328302,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r038s067/ses-1/anat/sub-r038s067_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r038s067/ses-1/anat/sub-r038s067_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r039s003",
+      "dice": 1.0893246175497552e-09,
+      "jaccard": 1.0893246175497552e-09,
+      "precision": 1.0,
+      "recall": 1.0893246175497552e-09,
+      "pred_voxels": 0,
+      "gt_voxels": 918,
+      "abs_volume_diff_ratio": 0.9999999989106754,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r039s003/ses-1/anat/sub-r039s003_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r039s003/ses-1/anat/sub-r039s003_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s002",
+      "dice": 0.5918727916396135,
+      "jaccard": 0.4203262235799556,
+      "precision": 0.4280238503287803,
+      "recall": 0.9589694656880061,
+      "pred_voxels": 2348,
+      "gt_voxels": 1048,
+      "abs_volume_diff_ratio": 1.2404580140835324,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s002/ses-1/anat/sub-r040s002_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s002/ses-1/anat/sub-r040s002_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s024",
+      "dice": 0.4647580177367353,
+      "jaccard": 0.30272623020999984,
+      "precision": 0.9585706032880605,
+      "recall": 0.30673955529216873,
+      "pred_voxels": 12117,
+      "gt_voxels": 37866,
+      "abs_volume_diff_ratio": 0.6800031690519198,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s024/ses-1/anat/sub-r040s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s024/ses-1/anat/sub-r040s024_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s043",
+      "dice": 0.619633401252983,
+      "jaccard": 0.44889046276571165,
+      "precision": 0.5490903841251674,
+      "recall": 0.7109740138883951,
+      "pred_voxels": 6926,
+      "gt_voxels": 5349,
+      "abs_volume_diff_ratio": 0.29482146190038855,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s043/ses-1/anat/sub-r040s043_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s043/ses-1/anat/sub-r040s043_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s049",
+      "dice": 9.912767643743777e-11,
+      "jaccard": 9.912767643743777e-11,
+      "precision": 1.992031868541769e-09,
+      "recall": 1.0431879823656176e-10,
+      "pred_voxels": 502,
+      "gt_voxels": 9586,
+      "abs_volume_diff_ratio": 0.9476319631809271,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s049/ses-1/anat/sub-r040s049_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s049/ses-1/anat/sub-r040s049_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s053",
+      "dice": 0.7043823878605657,
+      "jaccard": 0.5436653386482153,
+      "precision": 0.7938975708447998,
+      "recall": 0.6330081428485472,
+      "pred_voxels": 111726,
+      "gt_voxels": 140123,
+      "abs_volume_diff_ratio": 0.20265766504997282,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s053/ses-1/anat/sub-r040s053_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s053/ses-1/anat/sub-r040s053_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s054",
+      "dice": 0.7001273503857871,
+      "jaccard": 0.5386122637691779,
+      "precision": 0.7422172808541586,
+      "recall": 0.6625549412076344,
+      "pred_voxels": 6296,
+      "gt_voxels": 7053,
+      "abs_volume_diff_ratio": 0.10733021407807596,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s054/ses-1/anat/sub-r040s054_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s054/ses-1/anat/sub-r040s054_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r040s063",
+      "dice": 0.2139384120940365,
+      "jaccard": 0.119782214688577,
+      "precision": 0.6470588246828143,
+      "recall": 0.128155340370126,
+      "pred_voxels": 306,
+      "gt_voxels": 1545,
+      "abs_volume_diff_ratio": 0.8019417470537593,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r040s063/ses-1/anat/sub-r040s063_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r040s063/ses-1/anat/sub-r040s063_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r042s001",
+      "dice": 0.033472807391327165,
+      "jaccard": 0.01702128077863285,
+      "precision": 0.01941748048826466,
+      "recall": 0.12121214784205614,
+      "pred_voxels": 206,
+      "gt_voxels": 33,
+      "abs_volume_diff_ratio": 5.242424083562907,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r042s001/ses-1/anat/sub-r042s001_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r042s001/ses-1/anat/sub-r042s001_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r042s021",
+      "dice": 0.6666666666934469,
+      "jaccard": 0.5000000000602555,
+      "precision": 0.738124888856409,
+      "recall": 0.6078230296501871,
+      "pred_voxels": 5621,
+      "gt_voxels": 6826,
+      "abs_volume_diff_ratio": 0.17653091119593745,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r042s021/ses-1/anat/sub-r042s021_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r042s021/ses-1/anat/sub-r042s021_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r042s028",
+      "dice": 0.8723978103651246,
+      "jaccard": 0.7736751652177776,
+      "precision": 0.9658383375912886,
+      "recall": 0.7954423323900638,
+      "pred_voxels": 180846,
+      "gt_voxels": 219586,
+      "abs_volume_diff_ratio": 0.17642290492027532,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r042s028/ses-1/anat/sub-r042s028_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r042s028/ses-1/anat/sub-r042s028_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r046s001",
+      "dice": 0.547235343182326,
+      "jaccard": 0.3766854739048785,
+      "precision": 0.4297872341047695,
+      "recall": 0.7530108966253085,
+      "pred_voxels": 9165,
+      "gt_voxels": 5231,
+      "abs_volume_diff_ratio": 0.7520550562508019,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r046s001/ses-1/anat/sub-r046s001_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r046s001/ses-1/anat/sub-r046s001_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r046s005",
+      "dice": 0.8294597853376501,
+      "jaccard": 0.7086128053938661,
+      "precision": 0.7264216594258783,
+      "recall": 0.9665599447197211,
+      "pred_voxels": 288835,
+      "gt_voxels": 217075,
+      "abs_volume_diff_ratio": 0.33057698951822834,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r046s005/ses-1/anat/sub-r046s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r046s005/ses-1/anat/sub-r046s005_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s007",
+      "dice": 0.8451758161762408,
+      "jaccard": 0.7318653592676263,
+      "precision": 0.8768205551060168,
+      "recall": 0.8157356512964505,
+      "pred_voxels": 14556,
+      "gt_voxels": 15646,
+      "abs_volume_diff_ratio": 0.06966636839641657,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s007/ses-1/anat/sub-r047s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s007/ses-1/anat/sub-r047s007_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s010",
+      "dice": 0.3584896799568121,
+      "jaccard": 0.21839014692064618,
+      "precision": 0.26951118330592067,
+      "recall": 0.5351772005631444,
+      "pred_voxels": 56647,
+      "gt_voxels": 28527,
+      "abs_volume_diff_ratio": 0.9857328144920344,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s010/ses-1/anat/sub-r047s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s010/ses-1/anat/sub-r047s010_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s014",
+      "dice": 0.6677648436968573,
+      "jaccard": 0.5012364675587324,
+      "precision": 0.5147775373997784,
+      "recall": 0.9501371575419237,
+      "pred_voxels": 53155,
+      "gt_voxels": 28799,
+      "abs_volume_diff_ratio": 0.8457238098251424,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s014/ses-1/anat/sub-r047s014_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s014/ses-1/anat/sub-r047s014_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s016",
+      "dice": 0.27723707840147055,
+      "jaccard": 0.16092584476075847,
+      "precision": 0.6148365466828012,
+      "recall": 0.17896791519104943,
+      "pred_voxels": 2386,
+      "gt_voxels": 8197,
+      "abs_volume_diff_ratio": 0.708917896705024,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s016/ses-1/anat/sub-r047s016_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s016/ses-1/anat/sub-r047s016_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s017",
+      "dice": 0.540867689385135,
+      "jaccard": 0.37067761812150496,
+      "precision": 0.6376995902730395,
+      "recall": 0.4695661222068915,
+      "pred_voxels": 7077,
+      "gt_voxels": 9611,
+      "abs_volume_diff_ratio": 0.2636562272121885,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s017/ses-1/anat/sub-r047s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s017/ses-1/anat/sub-r047s017_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s018",
+      "dice": 0.8441329187328246,
+      "jaccard": 0.7303027592146626,
+      "precision": 0.8241843828450085,
+      "recall": 0.8650710749827412,
+      "pred_voxels": 69334,
+      "gt_voxels": 66057,
+      "abs_volume_diff_ratio": 0.04960867129827863,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s018/ses-1/anat/sub-r047s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s018/ses-1/anat/sub-r047s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s021",
+      "dice": 0.900080223309553,
+      "jaccard": 0.818314428365192,
+      "precision": 0.8787598768579918,
+      "recall": 0.9224608361867286,
+      "pred_voxels": 202367,
+      "gt_voxels": 192780,
+      "abs_volume_diff_ratio": 0.04973026247510255,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s021/ses-1/anat/sub-r047s021_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s021/ses-1/anat/sub-r047s021_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s035",
+      "dice": 0.8520816157363388,
+      "jaccard": 0.7422841444290245,
+      "precision": 0.892697339854129,
+      "recall": 0.8150009049165754,
+      "pred_voxels": 105934,
+      "gt_voxels": 116033,
+      "abs_volume_diff_ratio": 0.08703558470360126,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s035/ses-1/anat/sub-r047s035_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s035/ses-1/anat/sub-r047s035_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s037",
+      "dice": 0.7373267153791727,
+      "jaccard": 0.5839410117913937,
+      "precision": 0.7278647946817103,
+      "recall": 0.7470378776888774,
+      "pred_voxels": 49288,
+      "gt_voxels": 48023,
+      "abs_volume_diff_ratio": 0.026341544675960653,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s037/ses-1/anat/sub-r047s037_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s037/ses-1/anat/sub-r047s037_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r047s039",
+      "dice": 0.24513768541833836,
+      "jaccard": 0.1396905520531449,
+      "precision": 0.40361445802041396,
+      "recall": 0.17602323020243044,
+      "pred_voxels": 3154,
+      "gt_voxels": 7232,
+      "abs_volume_diff_ratio": 0.5638827432848613,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r047s039/ses-1/anat/sub-r047s039_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r047s039/ses-1/anat/sub-r047s039_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r048s018",
+      "dice": 0.8974676989094548,
+      "jaccard": 0.8140058100996715,
+      "precision": 0.8434833822784359,
+      "recall": 0.9588346878432721,
+      "pred_voxels": 122249,
+      "gt_voxels": 107542,
+      "abs_volume_diff_ratio": 0.13675587212310766,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r048s018/ses-1/anat/sub-r048s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r048s018/ses-1/anat/sub-r048s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r048s029",
+      "dice": 0.8053993253032629,
+      "jaccard": 0.6741996239657257,
+      "precision": 0.8753056237767589,
+      "recall": 0.7458333338628472,
+      "pred_voxels": 409,
+      "gt_voxels": 480,
+      "abs_volume_diff_ratio": 0.14791666635850695,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r048s029/ses-1/anat/sub-r048s029_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r048s029/ses-1/anat/sub-r048s029_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r048s035",
+      "dice": 0.24417202579942,
+      "jaccard": 0.13906375195844528,
+      "precision": 0.5502717393341161,
+      "recall": 0.15689566126589674,
+      "pred_voxels": 2208,
+      "gt_voxels": 7744,
+      "abs_volume_diff_ratio": 0.7148760329655377,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r048s035/ses-1/anat/sub-r048s035_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r048s035/ses-1/anat/sub-r048s035_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r049s011",
+      "dice": 0.12093726401588882,
+      "jaccard": 0.0643604185936282,
+      "precision": 0.7868852466003763,
+      "recall": 0.06550218366116208,
+      "pred_voxels": 305,
+      "gt_voxels": 3664,
+      "abs_volume_diff_ratio": 0.9167576416711907,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r049s011/ses-1/anat/sub-r049s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r049s011/ses-1/anat/sub-r049s011_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r049s018",
+      "dice": 0.023715416949179016,
+      "jaccard": 0.012000001975999996,
+      "precision": 0.020979024402171243,
+      "recall": 0.027272731694214857,
+      "pred_voxels": 286,
+      "gt_voxels": 220,
+      "abs_volume_diff_ratio": 0.2999999986363636,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r049s018/ses-1/anat/sub-r049s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r049s018/ses-1/anat/sub-r049s018_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r049s020",
+      "dice": 3.593244698672927e-10,
+      "jaccard": 3.593244698672927e-10,
+      "precision": 4.1135335236061156e-10,
+      "recall": 2.8409090828383262e-09,
+      "pred_voxels": 2431,
+      "gt_voxels": 352,
+      "abs_volume_diff_ratio": 5.906249983220881,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r049s020/ses-1/anat/sub-r049s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r049s020/ses-1/anat/sub-r049s020_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r050s008",
+      "dice": 2.6525198868633423e-09,
+      "jaccard": 2.6525198868633423e-09,
+      "precision": 4.99999750000125e-07,
+      "recall": 2.6666666595555553e-09,
+      "pred_voxels": 2,
+      "gt_voxels": 375,
+      "abs_volume_diff_ratio": 0.9946666640142222,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r050s008/ses-1/anat/sub-r050s008_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r050s008/ses-1/anat/sub-r050s008_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r052s016",
+      "dice": 0.7135229899025004,
+      "jaccard": 0.5546333003524984,
+      "precision": 0.6035319493659299,
+      "recall": 0.8725394660158762,
+      "pred_voxels": 7418,
+      "gt_voxels": 5131,
+      "abs_volume_diff_ratio": 0.44572208137873276,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r052s016/ses-1/anat/sub-r052s016_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r052s016/ses-1/anat/sub-r052s016_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r052s021",
+      "dice": 0.7350709652734092,
+      "jaccard": 0.5811163670819159,
+      "precision": 0.9137756620070658,
+      "recall": 0.614830237032687,
+      "pred_voxels": 50415,
+      "gt_voxels": 74928,
+      "abs_volume_diff_ratio": 0.32715406790082274,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r052s021/ses-1/anat/sub-r052s021_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r052s021/ses-1/anat/sub-r052s021_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    },
+    {
+      "subject": "sub-r052s032",
+      "dice": 0.6582703116364573,
+      "jaccard": 0.49061321170757904,
+      "precision": 0.7378941813076993,
+      "recall": 0.5941567065288629,
+      "pred_voxels": 15158,
+      "gt_voxels": 18825,
+      "abs_volume_diff_ratio": 0.19479415669615968,
+      "shape_gt": [
+        197,
+        233,
+        189
+      ],
+      "shape_pred": [
+        197,
+        233,
+        189
+      ],
+      "affine_close": true,
+      "gt_path": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS/sub-r052s032/ses-1/anat/sub-r052s032_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz",
+      "pred_path": "/data/cs_courses/neuroimaging/atlas_clean/runs/swin/run_DA_kfold_02/preds_bids/derivatives/atlas2_prediction/sub-r052s032/ses-1/anat/sub-r052s032_ses-1_space-MNI152NLin2009aSym_label-L_desc-T1lesion_mask.nii.gz"
+    }
+  ],
+  "load_errors": [],
+  "sample_check": null
+}

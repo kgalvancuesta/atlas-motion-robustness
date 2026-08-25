@@ -1,0 +1,53 @@
+{
+  "args": {
+    "data_root": "/data/cs_courses/neuroimaging/atlas_clean/data",
+    "gt_deriv": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS",
+    "run_dir": "runs/uxnet/run_kfold_02",
+    "splits_json": "splits/cv/atlas_5fold_lesion_quartile_excluding_known_issues.json",
+    "cv_fold": 1,
+    "make_splits": false,
+    "max_epochs": 45,
+    "batch_size": 1,
+    "patch_size": [
+      128,
+      128,
+      128
+    ],
+    "patches_per_volume": 8,
+    "lesion_prob": 0.7,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "accum_steps": 1,
+    "num_workers": 4,
+    "pin_memory": true,
+    "val_interval": 1,
+    "patience": 10,
+    "seed": 9001,
+    "amp": true,
+    "numerics_debug": true,
+    "numerics_debug_hooks": false,
+    "numerics_debug_fp32_probe": false,
+    "numerics_debug_topk": 8,
+    "loss": "dicece",
+    "augment": null,
+    "augment_frac": 0.5
+  },
+  "git_commit": "adff79701907c46b5f95cc605937d7c18d336b4a",
+  "model_name": "uxnet",
+  "split_resolution": {
+    "format": "cv",
+    "fold_index": 1,
+    "train": {
+      "format": "cv",
+      "fold_index": 1,
+      "split_key_used": "train_ids",
+      "split_key_reason": "CV fold 1: key 'train_ids'"
+    },
+    "val": {
+      "format": "cv",
+      "fold_index": 1,
+      "split_key_used": "val_ids",
+      "split_key_reason": "CV fold 1: key 'val_ids'"
+    }
+  }
+}

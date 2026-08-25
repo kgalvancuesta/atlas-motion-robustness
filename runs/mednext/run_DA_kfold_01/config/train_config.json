@@ -1,0 +1,54 @@
+{
+  "args": {
+    "data_root": "/data/cs_courses/neuroimaging/atlas_clean/data",
+    "gt_deriv": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS",
+    "run_dir": "runs/mednext/run_DA_kfold_01",
+    "splits_json": "splits/cv/atlas_5fold_lesion_quartile_excluding_known_issues.json",
+    "cv_fold": 0,
+    "make_splits": false,
+    "max_epochs": 45,
+    "batch_size": 1,
+    "patch_size": [
+      128,
+      128,
+      128
+    ],
+    "patches_per_volume": 8,
+    "lesion_prob": 0.7,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "accum_steps": 1,
+    "num_workers": 4,
+    "pin_memory": true,
+    "val_interval": 1,
+    "patience": 10,
+    "seed": 9001,
+    "amp": true,
+    "numerics_debug": true,
+    "numerics_debug_hooks": false,
+    "numerics_debug_fp32_probe": false,
+    "numerics_debug_topk": 8,
+    "loss": "mednext",
+    "augment": "motion_consistent",
+    "augment_frac": 0.5
+  },
+  "ddp_find_unused_parameters": true,
+  "git_commit": "a0fb9bfa8cb2a98a7a65c03e52a051c5e73e898a",
+  "model_name": "mednext",
+  "split_resolution": {
+    "format": "cv",
+    "fold_index": 0,
+    "train": {
+      "format": "cv",
+      "fold_index": 0,
+      "split_key_used": "train_ids",
+      "split_key_reason": "CV fold 0: key 'train_ids'"
+    },
+    "val": {
+      "format": "cv",
+      "fold_index": 0,
+      "split_key_used": "val_ids",
+      "split_key_reason": "CV fold 0: key 'val_ids'"
+    }
+  }
+}

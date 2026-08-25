@@ -1,0 +1,1985 @@
+{
+  "config": {
+    "model_dir": "<REPO_ROOT>/runs/base_cnn",
+    "run_prefix": "run_DA_kfold",
+    "splits_json": "<REPO_ROOT>/splits/cv/atlas_5fold_lesion_quartile_excluding_known_issues.json",
+    "out_dir": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_summary"
+  },
+  "expected_test_subjects": 653,
+  "per_fold": [
+    {
+      "fold_index": 0,
+      "run_dir": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_01",
+      "expected_test_subjects": 131,
+      "clean_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_01/eval_local/test_clean_metrics.json",
+      "clean_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 0: key 'test_ids'",
+        "cv_fold": 0,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 131,
+        "n_evaluated": 131,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7417085448657861,
+        "dice": {
+          "mean": 0.5101487272300346,
+          "std": 0.2956787978658954,
+          "min": 2.8312570773410937e-10,
+          "p25": 0.27636658851229956,
+          "median": 0.5834637291366674,
+          "p75": 0.7595827152524857,
+          "max": 0.9068457019653704
+        },
+        "jaccard": {
+          "mean": 0.3937424139920355,
+          "std": 0.2619861736844605,
+          "min": 2.8312570773410937e-10,
+          "p25": 0.16033967445776753,
+          "median": 0.41189466247685624,
+          "p75": 0.6123608784158184,
+          "max": 0.8295678877320535
+        },
+        "precision": {
+          "mean": 0.6352988280379118,
+          "std": 0.32247999452655557,
+          "min": 2.5445292556118847e-09,
+          "p25": 0.38986249723665284,
+          "median": 0.7550295859437695,
+          "p75": 0.8898098808499697,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.5167068840354742,
+          "std": 0.30587629543611755,
+          "min": 2.8409090901020144e-10,
+          "p25": 0.28446129100069883,
+          "median": 0.5793458828533581,
+          "p75": 0.7846748842271092,
+          "max": 0.9665024630871897
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 0.6818269403196865,
+          "std": 1.164384356708438,
+          "min": 0.004310344826812079,
+          "p25": 0.1286706596030543,
+          "median": 0.39003951361234585,
+          "p75": 0.7950141643071129,
+          "max": 8.140186890529012
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r009s115",
+            "dice": 2.8312570773410937e-10
+          },
+          {
+            "subject": "sub-r009s093",
+            "dice": 7.007708474416461e-10
+          },
+          {
+            "subject": "sub-r035s013",
+            "dice": 7.423904968504896e-10
+          },
+          {
+            "subject": "sub-r014s010",
+            "dice": 1.2836970458489125e-09
+          },
+          {
+            "subject": "sub-r038s021",
+            "dice": 1.658374789952944e-09
+          },
+          {
+            "subject": "sub-r019s001",
+            "dice": 2.0964360543051655e-09
+          },
+          {
+            "subject": "sub-r050s006",
+            "dice": 3.003002993984976e-09
+          },
+          {
+            "subject": "sub-r001s018",
+            "dice": 3.4843205453507995e-09
+          },
+          {
+            "subject": "sub-r009s036",
+            "dice": 3.571428558673469e-09
+          },
+          {
+            "subject": "sub-r009s100",
+            "dice": 4.366812208005187e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r002s005",
+            "dice": 0.9068457019653704
+          },
+          {
+            "subject": "sub-r002s010",
+            "dice": 0.8952137801767921
+          },
+          {
+            "subject": "sub-r034s007",
+            "dice": 0.8942800788961152
+          },
+          {
+            "subject": "sub-r005s046",
+            "dice": 0.888451587389095
+          },
+          {
+            "subject": "sub-r001s002",
+            "dice": 0.8880170693100847
+          },
+          {
+            "subject": "sub-r003s004",
+            "dice": 0.8829540870453043
+          },
+          {
+            "subject": "sub-r042s013",
+            "dice": 0.8772787745900084
+          },
+          {
+            "subject": "sub-r023s009",
+            "dice": 0.8709809352290321
+          },
+          {
+            "subject": "sub-r031s034",
+            "dice": 0.8682833486665381
+          },
+          {
+            "subject": "sub-r002s007",
+            "dice": 0.8651544210128196
+          }
+        ]
+      },
+      "augmented_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_01/eval_local/test_augmented_metrics.json",
+      "augmented_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 0: key 'test_ids'",
+        "cv_fold": 0,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 131,
+        "n_evaluated": 131,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7242978516728635,
+        "dice": {
+          "mean": 0.4875517322540542,
+          "std": 0.29544939821072724,
+          "min": 1.5893197708853592e-10,
+          "p25": 0.23645836985780666,
+          "median": 0.5618750361314104,
+          "p75": 0.7432497415077148,
+          "max": 0.8954031465096796
+        },
+        "jaccard": {
+          "mean": 0.3716521865952373,
+          "std": 0.25527726697630887,
+          "min": 1.5893197708853592e-10,
+          "p25": 0.13408871024845398,
+          "median": 0.390699730730463,
+          "p75": 0.5914098112706838,
+          "max": 0.8106153332602613
+        },
+        "precision": {
+          "mean": 0.6101884862504905,
+          "std": 0.325215576470595,
+          "min": 1.9849146482761183e-10,
+          "p25": 0.3783518720589424,
+          "median": 0.7500000001984126,
+          "p75": 0.8766881152715353,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.48824180407663376,
+          "std": 0.30195358810597983,
+          "min": 1.5982100045392023e-10,
+          "p25": 0.21986535135195773,
+          "median": 0.5325211646639435,
+          "p75": 0.7583099484919137,
+          "max": 0.9674876847610959
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 1.369031572807155,
+          "std": 7.770549365610711,
+          "min": 0.002254068496456118,
+          "p25": 0.16044139361247994,
+          "median": 0.4301937206311978,
+          "p75": 0.7914236952663349,
+          "max": 88.96428412563779
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r038s016",
+            "dice": 1.5893197708853592e-10
+          },
+          {
+            "subject": "sub-r009s082",
+            "dice": 1.9630938354999813e-10
+          },
+          {
+            "subject": "sub-r009s115",
+            "dice": 2.8312570773410937e-10
+          },
+          {
+            "subject": "sub-r009s093",
+            "dice": 7.007708474416461e-10
+          },
+          {
+            "subject": "sub-r035s013",
+            "dice": 7.530120476257438e-10
+          },
+          {
+            "subject": "sub-r038s021",
+            "dice": 1.2690355313844726e-09
+          },
+          {
+            "subject": "sub-r014s010",
+            "dice": 1.2836970458489125e-09
+          },
+          {
+            "subject": "sub-r001s018",
+            "dice": 1.4858840988322672e-09
+          },
+          {
+            "subject": "sub-r019s001",
+            "dice": 2.1459227421761312e-09
+          },
+          {
+            "subject": "sub-r009s036",
+            "dice": 4.166666649305555e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r002s010",
+            "dice": 0.8954031465096796
+          },
+          {
+            "subject": "sub-r042s013",
+            "dice": 0.8762344121719803
+          },
+          {
+            "subject": "sub-r005s046",
+            "dice": 0.8753416529687317
+          },
+          {
+            "subject": "sub-r034s007",
+            "dice": 0.8747466609607703
+          },
+          {
+            "subject": "sub-r031s034",
+            "dice": 0.8681822868341796
+          },
+          {
+            "subject": "sub-r004s001",
+            "dice": 0.8629569335518409
+          },
+          {
+            "subject": "sub-r003s004",
+            "dice": 0.8532501013630258
+          },
+          {
+            "subject": "sub-r031s022",
+            "dice": 0.8464928940160691
+          },
+          {
+            "subject": "sub-r027s017",
+            "dice": 0.8436708606406049
+          },
+          {
+            "subject": "sub-r048s016",
+            "dice": 0.8423726323010461
+          }
+        ]
+      },
+      "subject_checks": {
+        "clean": {
+          "expected_subjects": 131,
+          "observed_subjects": 131,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        },
+        "augmented": {
+          "expected_subjects": 131,
+          "observed_subjects": 131,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        }
+      },
+      "robustness_delta_dice_mean": 0.022596994975980424,
+      "clean_dice_mean": 0.5101487272300346,
+      "augmented_dice_mean": 0.4875517322540542,
+      "clean_jaccard_mean": 0.3937424139920355,
+      "augmented_jaccard_mean": 0.3716521865952373,
+      "clean_precision_mean": 0.6352988280379118,
+      "augmented_precision_mean": 0.6101884862504905,
+      "clean_recall_mean": 0.5167068840354742,
+      "augmented_recall_mean": 0.48824180407663376,
+      "clean_abs_volume_diff_ratio_mean": 0.6818269403196865,
+      "augmented_abs_volume_diff_ratio_mean": 1.369031572807155,
+      "fold_robustness_delta_mean": 0.02259699497598039
+    },
+    {
+      "fold_index": 1,
+      "run_dir": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_02",
+      "expected_test_subjects": 131,
+      "clean_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_02/eval_local/test_clean_metrics.json",
+      "clean_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 1: key 'test_ids'",
+        "cv_fold": 1,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 131,
+        "n_evaluated": 131,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7567535648240192,
+        "dice": {
+          "mean": 0.48513068103253704,
+          "std": 0.3108587400086558,
+          "min": 1.8397233055809897e-11,
+          "p25": 0.18391354176855496,
+          "median": 0.5519287840475834,
+          "p75": 0.7687668439134496,
+          "max": 0.9200594516998915
+        },
+        "jaccard": {
+          "mean": 0.3753926231151077,
+          "std": 0.27196786588104715,
+          "min": 1.8397233055809897e-11,
+          "p25": 0.10130492245807163,
+          "median": 0.38114754225174685,
+          "p75": 0.6243877088280803,
+          "max": 0.8519537979645577
+        },
+        "precision": {
+          "mean": 0.6311769901172566,
+          "std": 0.31697011695923794,
+          "min": 1.841586711076378e-11,
+          "p25": 0.47223293830811697,
+          "median": 0.7505000909709947,
+          "p75": 0.884873505229554,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.48409942247099563,
+          "std": 0.3392583971841954,
+          "min": 1.0431879823656176e-10,
+          "p25": 0.1488523384555716,
+          "median": 0.5041189049144978,
+          "p75": 0.7989017588410536,
+          "max": 0.998571428572449
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 8.5157423352564,
+          "std": 85.83115405562266,
+          "min": 0.0018106995883283375,
+          "p25": 0.12927865496155258,
+          "median": 0.45209194209038067,
+          "p75": 0.8457497498241306,
+          "max": 986.2908911583474
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r001s022",
+            "dice": 1.8397233055809897e-11
+          },
+          {
+            "subject": "sub-r040s049",
+            "dice": 1.0361620556381553e-10
+          },
+          {
+            "subject": "sub-r009s061",
+            "dice": 4.76644423033058e-10
+          },
+          {
+            "subject": "sub-r009s046",
+            "dice": 4.786979413696995e-10
+          },
+          {
+            "subject": "sub-r009s066",
+            "dice": 7.204610945818003e-10
+          },
+          {
+            "subject": "sub-r039s003",
+            "dice": 1.0893246175497552e-09
+          },
+          {
+            "subject": "sub-r050s008",
+            "dice": 1.5384615360946745e-09
+          },
+          {
+            "subject": "sub-r038s058",
+            "dice": 1.6260162575186726e-09
+          },
+          {
+            "subject": "sub-r038s007",
+            "dice": 1.703577509874655e-09
+          },
+          {
+            "subject": "sub-r042s001",
+            "dice": 1.838235290738538e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r003s005",
+            "dice": 0.9200594516998915
+          },
+          {
+            "subject": "sub-r004s004",
+            "dice": 0.915346963177135
+          },
+          {
+            "subject": "sub-r047s021",
+            "dice": 0.8872683012370489
+          },
+          {
+            "subject": "sub-r048s018",
+            "dice": 0.8832594690518132
+          },
+          {
+            "subject": "sub-r023s017",
+            "dice": 0.8762257906354337
+          },
+          {
+            "subject": "sub-r002s009",
+            "dice": 0.8701580468406055
+          },
+          {
+            "subject": "sub-r011s025",
+            "dice": 0.8685785021934024
+          },
+          {
+            "subject": "sub-r001s025",
+            "dice": 0.8590444497433986
+          },
+          {
+            "subject": "sub-r010s013",
+            "dice": 0.8568652850204451
+          },
+          {
+            "subject": "sub-r005s074",
+            "dice": 0.8549126436222958
+          }
+        ]
+      },
+      "augmented_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_02/eval_local/test_augmented_metrics.json",
+      "augmented_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 1: key 'test_ids'",
+        "cv_fold": 1,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 131,
+        "n_evaluated": 131,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7346730571617923,
+        "dice": {
+          "mean": 0.47148031333383983,
+          "std": 0.307262902354958,
+          "min": 1.559892055445429e-11,
+          "p25": 0.19824648667375147,
+          "median": 0.5274904655270677,
+          "p75": 0.7671753097381484,
+          "max": 0.9201001285435693
+        },
+        "jaccard": {
+          "mean": 0.36148426376320497,
+          "std": 0.26686209289997354,
+          "min": 1.559892055445429e-11,
+          "p25": 0.11006468264489433,
+          "median": 0.35822550087962624,
+          "p75": 0.6222931270678438,
+          "max": 0.8520235559459497
+        },
+        "precision": {
+          "mean": 0.6263218063302254,
+          "std": 0.3180552487545305,
+          "min": 1.5612314993823575e-11,
+          "p25": 0.4647949045903431,
+          "median": 0.7409396926092865,
+          "p75": 0.8776099741598625,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.4647290256423588,
+          "std": 0.32745628210317146,
+          "min": 1.0431879823656176e-10,
+          "p25": 0.1329695198738992,
+          "median": 0.5000000042372881,
+          "p75": 0.7729275225011905,
+          "max": 0.9971428571448979
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 9.840295851497242,
+          "std": 101.25058335712384,
+          "min": 0.008035680250005445,
+          "p25": 0.16237105994424744,
+          "median": 0.4423313722504904,
+          "p75": 0.8364085762565641,
+          "max": 1163.5817970257856
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r001s022",
+            "dice": 1.559892055445429e-11
+          },
+          {
+            "subject": "sub-r040s049",
+            "dice": 1.0363768265067491e-10
+          },
+          {
+            "subject": "sub-r009s046",
+            "dice": 3.94632991162339e-10
+          },
+          {
+            "subject": "sub-r009s061",
+            "dice": 4.770992364135977e-10
+          },
+          {
+            "subject": "sub-r040s063",
+            "dice": 6.472491905195798e-10
+          },
+          {
+            "subject": "sub-r009s066",
+            "dice": 7.209805330057818e-10
+          },
+          {
+            "subject": "sub-r039s003",
+            "dice": 1.0893246175497552e-09
+          },
+          {
+            "subject": "sub-r050s008",
+            "dice": 1.550387594495523e-09
+          },
+          {
+            "subject": "sub-r038s007",
+            "dice": 1.7271157137700937e-09
+          },
+          {
+            "subject": "sub-r038s058",
+            "dice": 1.7543859618344105e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r003s005",
+            "dice": 0.9201001285435693
+          },
+          {
+            "subject": "sub-r004s004",
+            "dice": 0.9123757198050724
+          },
+          {
+            "subject": "sub-r023s017",
+            "dice": 0.877049556790991
+          },
+          {
+            "subject": "sub-r047s021",
+            "dice": 0.8726512799703985
+          },
+          {
+            "subject": "sub-r011s025",
+            "dice": 0.8690451639783368
+          },
+          {
+            "subject": "sub-r048s018",
+            "dice": 0.8678257764778745
+          },
+          {
+            "subject": "sub-r005s074",
+            "dice": 0.8549069101367742
+          },
+          {
+            "subject": "sub-r024s002",
+            "dice": 0.8489026328228798
+          },
+          {
+            "subject": "sub-r002s009",
+            "dice": 0.8451132110320322
+          },
+          {
+            "subject": "sub-r010s013",
+            "dice": 0.8441644562850914
+          }
+        ]
+      },
+      "subject_checks": {
+        "clean": {
+          "expected_subjects": 131,
+          "observed_subjects": 131,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        },
+        "augmented": {
+          "expected_subjects": 131,
+          "observed_subjects": 131,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        }
+      },
+      "robustness_delta_dice_mean": 0.013650367698697189,
+      "clean_dice_mean": 0.48513068103253704,
+      "augmented_dice_mean": 0.47148031333383983,
+      "clean_jaccard_mean": 0.3753926231151077,
+      "augmented_jaccard_mean": 0.36148426376320497,
+      "clean_precision_mean": 0.6311769901172566,
+      "augmented_precision_mean": 0.6263218063302254,
+      "clean_recall_mean": 0.48409942247099563,
+      "augmented_recall_mean": 0.4647290256423588,
+      "clean_abs_volume_diff_ratio_mean": 8.5157423352564,
+      "augmented_abs_volume_diff_ratio_mean": 9.840295851497242,
+      "fold_robustness_delta_mean": 0.013650367698697208
+    },
+    {
+      "fold_index": 2,
+      "run_dir": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_03",
+      "expected_test_subjects": 131,
+      "clean_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_03/eval_local/test_clean_metrics.json",
+      "clean_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 2: key 'test_ids'",
+        "cv_fold": 2,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 131,
+        "n_evaluated": 131,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7778467357733012,
+        "dice": {
+          "mean": 0.5310632636961595,
+          "std": 0.3039912578016112,
+          "min": 4.27167876793179e-10,
+          "p25": 0.3302337162024817,
+          "median": 0.6411536330331927,
+          "p75": 0.7868070990710758,
+          "max": 0.9098807959565092
+        },
+        "jaccard": {
+          "mean": 0.41612706099610186,
+          "std": 0.26713823284615545,
+          "min": 4.27167876793179e-10,
+          "p25": 0.1977726058031437,
+          "median": 0.4718367351250312,
+          "p75": 0.648542580235002,
+          "max": 0.8346617439468578
+        },
+        "precision": {
+          "mean": 0.6616799704485788,
+          "std": 0.3035169736857837,
+          "min": 5.711022269725286e-10,
+          "p25": 0.5007139010903987,
+          "median": 0.7658072764138442,
+          "p75": 0.8851895165816246,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.5514448995263089,
+          "std": 0.32750213487631485,
+          "min": 4.889975547731063e-10,
+          "p25": 0.2767511368400032,
+          "median": 0.6660452941075617,
+          "p75": 0.819936780354434,
+          "max": 0.9932692307757026
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 0.9927099562645365,
+          "std": 4.244707466646029,
+          "min": 0.0012862166022058932,
+          "p25": 0.15277440333763004,
+          "median": 0.3119047611621315,
+          "p75": 0.8592368266103825,
+          "max": 47.98850519553442
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r049s010",
+            "dice": 4.27167876793179e-10
+          },
+          {
+            "subject": "sub-r034s012",
+            "dice": 4.889975547731063e-10
+          },
+          {
+            "subject": "sub-r009s010",
+            "dice": 5.333333330488888e-10
+          },
+          {
+            "subject": "sub-r009s110",
+            "dice": 5.518763793863817e-10
+          },
+          {
+            "subject": "sub-r049s005",
+            "dice": 7.142857137755101e-10
+          },
+          {
+            "subject": "sub-r034s046",
+            "dice": 9.661835739457163e-10
+          },
+          {
+            "subject": "sub-r038s024",
+            "dice": 1.0030090260752166e-09
+          },
+          {
+            "subject": "sub-r038s093",
+            "dice": 1.0309278339887341e-09
+          },
+          {
+            "subject": "sub-r009s058",
+            "dice": 1.2269938635251608e-09
+          },
+          {
+            "subject": "sub-r028s011",
+            "dice": 1.2547051427168064e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r023s008",
+            "dice": 0.9098807959565092
+          },
+          {
+            "subject": "sub-r034s013",
+            "dice": 0.9030875329646338
+          },
+          {
+            "subject": "sub-r004s032",
+            "dice": 0.9018776401810615
+          },
+          {
+            "subject": "sub-r047s041",
+            "dice": 0.9009532450782685
+          },
+          {
+            "subject": "sub-r002s004",
+            "dice": 0.8819916202301594
+          },
+          {
+            "subject": "sub-r048s015",
+            "dice": 0.8765611192933053
+          },
+          {
+            "subject": "sub-r024s005",
+            "dice": 0.8761209092231619
+          },
+          {
+            "subject": "sub-r040s076",
+            "dice": 0.8722908426110824
+          },
+          {
+            "subject": "sub-r027s009",
+            "dice": 0.866663004497668
+          },
+          {
+            "subject": "sub-r029s003",
+            "dice": 0.8651604656274143
+          }
+        ]
+      },
+      "augmented_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_03/eval_local/test_augmented_metrics.json",
+      "augmented_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 2: key 'test_ids'",
+        "cv_fold": 2,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 131,
+        "n_evaluated": 131,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7365687660583781,
+        "dice": {
+          "mean": 0.5011763971195273,
+          "std": 0.30636297243349064,
+          "min": 4.889975547731063e-10,
+          "p25": 0.22619328745290984,
+          "median": 0.6089067470610324,
+          "p75": 0.767173059463869,
+          "max": 0.9008699927617125
+        },
+        "jaccard": {
+          "mean": 0.3878380038112311,
+          "std": 0.26446914615521294,
+          "min": 4.889975547731063e-10,
+          "p25": 0.1275444840668101,
+          "median": 0.4377181370275944,
+          "p75": 0.6222880433844586,
+          "max": 0.8196209609687235
+        },
+        "precision": {
+          "mean": 0.6549917585860406,
+          "std": 0.29561776869962686,
+          "min": 1.0482180282513437e-09,
+          "p25": 0.4981690007620372,
+          "median": 0.75574246827479,
+          "p75": 0.8811136475289951,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.5213564073657316,
+          "std": 0.32502877645988965,
+          "min": 4.889975547731063e-10,
+          "p25": 0.21307092424200247,
+          "median": 0.6123760664109353,
+          "p75": 0.7851881499517257,
+          "max": 0.9793814433521096
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 1.106928729942846,
+          "std": 4.3985862047109014,
+          "min": 0.0061638172235581115,
+          "p25": 0.17519279599140275,
+          "median": 0.39963510885655673,
+          "p75": 0.9063198533614395,
+          "max": 48.689654612762595
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r034s012",
+            "dice": 4.889975547731063e-10
+          },
+          {
+            "subject": "sub-r009s010",
+            "dice": 5.333333330488888e-10
+          },
+          {
+            "subject": "sub-r009s110",
+            "dice": 5.518763793863817e-10
+          },
+          {
+            "subject": "sub-r049s010",
+            "dice": 6.476683933629089e-10
+          },
+          {
+            "subject": "sub-r049s005",
+            "dice": 7.153075817487069e-10
+          },
+          {
+            "subject": "sub-r009s087",
+            "dice": 7.552870084929855e-10
+          },
+          {
+            "subject": "sub-r034s046",
+            "dice": 9.661835739457163e-10
+          },
+          {
+            "subject": "sub-r038s024",
+            "dice": 1.0224948864800666e-09
+          },
+          {
+            "subject": "sub-r038s093",
+            "dice": 1.1123470510429954e-09
+          },
+          {
+            "subject": "sub-r009s058",
+            "dice": 1.2269938635251608e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r047s041",
+            "dice": 0.9008699927617125
+          },
+          {
+            "subject": "sub-r034s013",
+            "dice": 0.8987196396691937
+          },
+          {
+            "subject": "sub-r004s032",
+            "dice": 0.8875937082578437
+          },
+          {
+            "subject": "sub-r002s004",
+            "dice": 0.8810087325601482
+          },
+          {
+            "subject": "sub-r048s015",
+            "dice": 0.8766831825312035
+          },
+          {
+            "subject": "sub-r027s009",
+            "dice": 0.8676175548599716
+          },
+          {
+            "subject": "sub-r004s015",
+            "dice": 0.8564855584464389
+          },
+          {
+            "subject": "sub-r029s003",
+            "dice": 0.855933625147895
+          },
+          {
+            "subject": "sub-r005s068",
+            "dice": 0.8534299555178035
+          },
+          {
+            "subject": "sub-r045s003",
+            "dice": 0.8470034198661769
+          }
+        ]
+      },
+      "subject_checks": {
+        "clean": {
+          "expected_subjects": 131,
+          "observed_subjects": 131,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        },
+        "augmented": {
+          "expected_subjects": 131,
+          "observed_subjects": 131,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        }
+      },
+      "robustness_delta_dice_mean": 0.029886866576632226,
+      "clean_dice_mean": 0.5310632636961595,
+      "augmented_dice_mean": 0.5011763971195273,
+      "clean_jaccard_mean": 0.41612706099610186,
+      "augmented_jaccard_mean": 0.3878380038112311,
+      "clean_precision_mean": 0.6616799704485788,
+      "augmented_precision_mean": 0.6549917585860406,
+      "clean_recall_mean": 0.5514448995263089,
+      "augmented_recall_mean": 0.5213564073657316,
+      "clean_abs_volume_diff_ratio_mean": 0.9927099562645365,
+      "augmented_abs_volume_diff_ratio_mean": 1.106928729942846,
+      "fold_robustness_delta_mean": 0.0298868665766322
+    },
+    {
+      "fold_index": 3,
+      "run_dir": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_04",
+      "expected_test_subjects": 130,
+      "clean_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_04/eval_local/test_clean_metrics.json",
+      "clean_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 3: key 'test_ids'",
+        "cv_fold": 3,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 130,
+        "n_evaluated": 130,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7521356282934606,
+        "dice": {
+          "mean": 0.5236287850884144,
+          "std": 0.30008232383072436,
+          "min": 6.042661187622051e-11,
+          "p25": 0.2770460464098966,
+          "median": 0.6179304907609406,
+          "p75": 0.7914157705127183,
+          "max": 0.9096366170014955
+        },
+        "jaccard": {
+          "mean": 0.4079557743021515,
+          "std": 0.2651832323947487,
+          "min": 6.042661187622051e-11,
+          "p25": 0.16081301880565102,
+          "median": 0.4471080303255928,
+          "p75": 0.6548495898810776,
+          "max": 0.8342508847842608
+        },
+        "precision": {
+          "mean": 0.6452332333130667,
+          "std": 0.3159195641374379,
+          "min": 2.7548209358802145e-10,
+          "p25": 0.5171973753151737,
+          "median": 0.7795679082415055,
+          "p75": 0.8907102944973719,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.5228886764980781,
+          "std": 0.3209827759571404,
+          "min": 6.192717363995992e-11,
+          "p25": 0.2330357389849734,
+          "median": 0.5575509607528891,
+          "p75": 0.7992892351659846,
+          "max": 0.9775280901401339
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 0.7150702690435516,
+          "std": 1.7277089579392935,
+          "min": 0.0025306964099230766,
+          "p25": 0.10890862222378414,
+          "median": 0.36745732905341466,
+          "p75": 0.7300179046155598,
+          "max": 15.501039468812808
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r042s010",
+            "dice": 6.042661187622051e-11
+          },
+          {
+            "subject": "sub-r009s040",
+            "dice": 6.951202557559349e-11
+          },
+          {
+            "subject": "sub-r038s082",
+            "dice": 1.6048788313906468e-10
+          },
+          {
+            "subject": "sub-r009s060",
+            "dice": 8.833922253680279e-10
+          },
+          {
+            "subject": "sub-r048s031",
+            "dice": 1.008064515112838e-09
+          },
+          {
+            "subject": "sub-r050s009",
+            "dice": 1.4104372335536852e-09
+          },
+          {
+            "subject": "sub-r009s013",
+            "dice": 1.6528925592514172e-09
+          },
+          {
+            "subject": "sub-r050s015",
+            "dice": 1.6863406379656987e-09
+          },
+          {
+            "subject": "sub-r038s026",
+            "dice": 1.7953321332220248e-09
+          },
+          {
+            "subject": "sub-r009s028",
+            "dice": 3.3670033556666553e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r004s022",
+            "dice": 0.9096366170014955
+          },
+          {
+            "subject": "sub-r042s032",
+            "dice": 0.8961072834452363
+          },
+          {
+            "subject": "sub-r004s009",
+            "dice": 0.8921329575567511
+          },
+          {
+            "subject": "sub-r004s020",
+            "dice": 0.8912969717537904
+          },
+          {
+            "subject": "sub-r047s026",
+            "dice": 0.8841010251897016
+          },
+          {
+            "subject": "sub-r005s058",
+            "dice": 0.876973326078471
+          },
+          {
+            "subject": "sub-r048s037",
+            "dice": 0.8662412653948773
+          },
+          {
+            "subject": "sub-r010s002",
+            "dice": 0.8635054115188425
+          },
+          {
+            "subject": "sub-r001s010",
+            "dice": 0.8609570205758091
+          },
+          {
+            "subject": "sub-r003s008",
+            "dice": 0.860528053033901
+          }
+        ]
+      },
+      "augmented_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_04/eval_local/test_augmented_metrics.json",
+      "augmented_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 3: key 'test_ids'",
+        "cv_fold": 3,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 130,
+        "n_evaluated": 130,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.6824740936269509,
+        "dice": {
+          "mean": 0.46436158712484943,
+          "std": 0.30364918825112436,
+          "min": 1.2308146762190504e-11,
+          "p25": 0.16882594266696138,
+          "median": 0.49512711364579387,
+          "p75": 0.7514744041789714,
+          "max": 0.9074023671086857
+        },
+        "jaccard": {
+          "mean": 0.35385823384127946,
+          "std": 0.26296632861060065,
+          "min": 1.2308146762190504e-11,
+          "p25": 0.09220282663673544,
+          "median": 0.3290275542602026,
+          "p75": 0.6018921239933461,
+          "max": 0.8305000301976192
+        },
+        "precision": {
+          "mean": 0.5694568417035576,
+          "std": 0.3317415351357337,
+          "min": 1.2583206452509932e-11,
+          "p25": 0.26180248786913274,
+          "median": 0.6843975266344462,
+          "p75": 0.8408389218627944,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.4800129078260992,
+          "std": 0.3257580709678504,
+          "min": 6.192717363995992e-11,
+          "p25": 0.16879551327041786,
+          "median": 0.5524600608802466,
+          "p75": 0.7948082723303762,
+          "max": 0.9775280901401339
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 1.844635138360617,
+          "std": 7.792667556729445,
+          "min": 0.0035538361186311677,
+          "p25": 0.1788836299902875,
+          "median": 0.40779485467675325,
+          "p75": 0.9012926347394261,
+          "max": 73.92307123668684
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r015s018",
+            "dice": 1.2308146762190504e-11
+          },
+          {
+            "subject": "sub-r042s010",
+            "dice": 6.042296072142459e-11
+          },
+          {
+            "subject": "sub-r009s040",
+            "dice": 6.96087985472916e-11
+          },
+          {
+            "subject": "sub-r019s010",
+            "dice": 8.208158909282757e-11
+          },
+          {
+            "subject": "sub-r038s082",
+            "dice": 1.6005121636362814e-10
+          },
+          {
+            "subject": "sub-r048s031",
+            "dice": 5.491488190284739e-10
+          },
+          {
+            "subject": "sub-r038s026",
+            "dice": 6.349206345175107e-10
+          },
+          {
+            "subject": "sub-r009s060",
+            "dice": 8.833922253680279e-10
+          },
+          {
+            "subject": "sub-r011s011",
+            "dice": 1.0131712249106675e-09
+          },
+          {
+            "subject": "sub-r050s015",
+            "dice": 1.6366612084506364e-09
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r004s022",
+            "dice": 0.9074023671086857
+          },
+          {
+            "subject": "sub-r004s020",
+            "dice": 0.8826393337609112
+          },
+          {
+            "subject": "sub-r047s026",
+            "dice": 0.8756492921969059
+          },
+          {
+            "subject": "sub-r005s058",
+            "dice": 0.8656263545766789
+          },
+          {
+            "subject": "sub-r001s010",
+            "dice": 0.8613055720602184
+          },
+          {
+            "subject": "sub-r042s032",
+            "dice": 0.8595336989329772
+          },
+          {
+            "subject": "sub-r004s009",
+            "dice": 0.8571718683205581
+          },
+          {
+            "subject": "sub-r048s037",
+            "dice": 0.8542545068232891
+          },
+          {
+            "subject": "sub-r048s002",
+            "dice": 0.8533475137738801
+          },
+          {
+            "subject": "sub-r010s002",
+            "dice": 0.8464236693726991
+          }
+        ]
+      },
+      "subject_checks": {
+        "clean": {
+          "expected_subjects": 130,
+          "observed_subjects": 130,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        },
+        "augmented": {
+          "expected_subjects": 130,
+          "observed_subjects": 130,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        }
+      },
+      "robustness_delta_dice_mean": 0.059267197963564805,
+      "clean_dice_mean": 0.5236287850884144,
+      "augmented_dice_mean": 0.46436158712484943,
+      "clean_jaccard_mean": 0.4079557743021515,
+      "augmented_jaccard_mean": 0.35385823384127946,
+      "clean_precision_mean": 0.6452332333130667,
+      "augmented_precision_mean": 0.5694568417035576,
+      "clean_recall_mean": 0.5228886764980781,
+      "augmented_recall_mean": 0.4800129078260992,
+      "clean_abs_volume_diff_ratio_mean": 0.7150702690435516,
+      "augmented_abs_volume_diff_ratio_mean": 1.844635138360617,
+      "fold_robustness_delta_mean": 0.059267197963564944
+    },
+    {
+      "fold_index": 4,
+      "run_dir": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_05",
+      "expected_test_subjects": 130,
+      "clean_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_05/eval_local/test_clean_metrics.json",
+      "clean_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 4: key 'test_ids'",
+        "cv_fold": 4,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 130,
+        "n_evaluated": 130,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.7233143289871687,
+        "dice": {
+          "mean": 0.5426739319781743,
+          "std": 0.27539896873408903,
+          "min": 1.0506408908330908e-10,
+          "p25": 0.368583915631892,
+          "median": 0.6392733636814134,
+          "p75": 0.7586390669105286,
+          "max": 0.9172775760329174
+        },
+        "jaccard": {
+          "mean": 0.4172967253865468,
+          "std": 0.24061232484826395,
+          "min": 1.0506408908330908e-10,
+          "p25": 0.22592888869252006,
+          "median": 0.46983709427971837,
+          "p75": 0.611134962288503,
+          "max": 0.8471955098818923
+        },
+        "precision": {
+          "mean": 0.5685781739219569,
+          "std": 0.278151545653145,
+          "min": 1.1481056243994194e-09,
+          "p25": 0.40513223397526643,
+          "median": 0.6207146703946843,
+          "p75": 0.7974328119297517,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.6267860160337655,
+          "std": 0.3033007313557351,
+          "min": 1.1564704520462043e-10,
+          "p25": 0.4965279406823966,
+          "median": 0.7298836024079748,
+          "p75": 0.8625687848995092,
+          "max": 0.980909090914876
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 0.9847999617662794,
+          "std": 1.9388028443877812,
+          "min": 0.0048579970086479836,
+          "p25": 0.14715840300905866,
+          "median": 0.3645022449889369,
+          "p75": 0.871321060220883,
+          "max": 12.816978413577848
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r028s014",
+            "dice": 1.0506408908330908e-10
+          },
+          {
+            "subject": "sub-r050s003",
+            "dice": 1.0604453859380218e-09
+          },
+          {
+            "subject": "sub-r009s065",
+            "dice": 1.709401706479655e-09
+          },
+          {
+            "subject": "sub-r009s018",
+            "dice": 2.0533880861326734e-09
+          },
+          {
+            "subject": "sub-r009s062",
+            "dice": 3.891050568517313e-09
+          },
+          {
+            "subject": "sub-r011s013",
+            "dice": 1.4705882136678204e-08
+          },
+          {
+            "subject": "sub-r009s035",
+            "dice": 2.3255813412655503e-08
+          },
+          {
+            "subject": "sub-r038s025",
+            "dice": 0.005217999435024664
+          },
+          {
+            "subject": "sub-r009s012",
+            "dice": 0.005665725196414377
+          },
+          {
+            "subject": "sub-r040s071",
+            "dice": 0.009375738647879616
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r003s003",
+            "dice": 0.9172775760329174
+          },
+          {
+            "subject": "sub-r042s008",
+            "dice": 0.8832825975199623
+          },
+          {
+            "subject": "sub-r002s008",
+            "dice": 0.8753330412445658
+          },
+          {
+            "subject": "sub-r004s030",
+            "dice": 0.8675506655612917
+          },
+          {
+            "subject": "sub-r052s010",
+            "dice": 0.8615779748560597
+          },
+          {
+            "subject": "sub-r015s016",
+            "dice": 0.8605648079468344
+          },
+          {
+            "subject": "sub-r001s033",
+            "dice": 0.8577087186378467
+          },
+          {
+            "subject": "sub-r004s034",
+            "dice": 0.8551404598311145
+          },
+          {
+            "subject": "sub-r004s035",
+            "dice": 0.842967536577082
+          },
+          {
+            "subject": "sub-r009s045",
+            "dice": 0.8403458214176681
+          }
+        ]
+      },
+      "augmented_report_path": "<REPO_ROOT>/runs/base_cnn/run_DA_kfold_05/eval_local/test_augmented_metrics.json",
+      "augmented_summary": {
+        "split_requested": "test",
+        "split_key_used": "test_ids",
+        "split_key_reason": "CV fold 4: key 'test_ids'",
+        "cv_fold": 4,
+        "metric_mode": "training_compatible",
+        "metric_definition": {
+          "pred_threshold": 0.5,
+          "gt_threshold": 0.5,
+          "eps": 1e-06,
+          "training_compatible_note": "Matches train_base_cnn validation Dice when using binary masks."
+        },
+        "n_subjects_in_split": 130,
+        "n_evaluated": 130,
+        "n_missing_pred": 0,
+        "n_missing_gt": 0,
+        "n_shape_mismatch": 0,
+        "n_affine_mismatch": 0,
+        "n_load_errors": 0,
+        "n_fallback_gt": 0,
+        "n_fallback_pred": 0,
+        "micro_dice": 0.691342742090045,
+        "dice": {
+          "mean": 0.5096137048404741,
+          "std": 0.2811735453368392,
+          "min": 1.7390397022461602e-11,
+          "p25": 0.31611222631914193,
+          "median": 0.5943308437338279,
+          "p75": 0.7388807680916657,
+          "max": 0.9172647165700023
+        },
+        "jaccard": {
+          "mean": 0.3870151644681617,
+          "std": 0.24185161815354914,
+          "min": 1.7390397022461602e-11,
+          "p25": 0.1877684452154754,
+          "median": 0.42282266470543983,
+          "p75": 0.585894616522979,
+          "max": 0.847173571054813
+        },
+        "precision": {
+          "mean": 0.525591895059725,
+          "std": 0.2958186822552319,
+          "min": 1.80440274265961e-11,
+          "p25": 0.2883830453940207,
+          "median": 0.585451432567241,
+          "p75": 0.7836996750851446,
+          "max": 1.0
+        },
+        "recall": {
+          "mean": 0.6035134352491206,
+          "std": 0.3072665439999891,
+          "min": 3.406226582076223e-11,
+          "p25": 0.4660242206566862,
+          "median": 0.6835534248711832,
+          "p75": 0.8490076257872918,
+          "max": 1.0
+        },
+        "abs_volume_diff_ratio": {
+          "mean": 1.8784775972757026,
+          "std": 5.9797363152482195,
+          "min": 0.005084745758402757,
+          "p25": 0.16764116412874147,
+          "median": 0.3865902499126781,
+          "p75": 1.0991493305028437,
+          "max": 60.05714114122454
+        },
+        "missing_pred_subjects_first20": [],
+        "missing_gt_subjects_first20": [],
+        "shape_mismatch_subjects_first20": [],
+        "affine_mismatch_subjects_first20": [],
+        "fallback_gt_subjects_first20": [],
+        "fallback_pred_subjects_first20": [],
+        "worst10_dice": [
+          {
+            "subject": "sub-r001s008",
+            "dice": 1.7390397022461602e-11
+          },
+          {
+            "subject": "sub-r038s025",
+            "dice": 2.4519419379547876e-11
+          },
+          {
+            "subject": "sub-r028s014",
+            "dice": 1.0506408908330908e-10
+          },
+          {
+            "subject": "sub-r009s035",
+            "dice": 4.604051563257803e-10
+          },
+          {
+            "subject": "sub-r009s012",
+            "dice": 4.714757187781821e-10
+          },
+          {
+            "subject": "sub-r009s018",
+            "dice": 2.2026431669545303e-09
+          },
+          {
+            "subject": "sub-r050s003",
+            "dice": 2.590673568417944e-09
+          },
+          {
+            "subject": "sub-r009s062",
+            "dice": 3.906249984741211e-09
+          },
+          {
+            "subject": "sub-r011s013",
+            "dice": 1.4705882136678204e-08
+          },
+          {
+            "subject": "sub-r038s074",
+            "dice": 0.003797283627311628
+          }
+        ],
+        "best10_dice": [
+          {
+            "subject": "sub-r003s003",
+            "dice": 0.9172647165700023
+          },
+          {
+            "subject": "sub-r042s008",
+            "dice": 0.8835007571644968
+          },
+          {
+            "subject": "sub-r004s030",
+            "dice": 0.867396086530315
+          },
+          {
+            "subject": "sub-r015s016",
+            "dice": 0.8604154026737484
+          },
+          {
+            "subject": "sub-r052s010",
+            "dice": 0.8600175667083422
+          },
+          {
+            "subject": "sub-r004s035",
+            "dice": 0.8417998770371895
+          },
+          {
+            "subject": "sub-r009s045",
+            "dice": 0.841315637714186
+          },
+          {
+            "subject": "sub-r004s034",
+            "dice": 0.8399233583030459
+          },
+          {
+            "subject": "sub-r034s039",
+            "dice": 0.8380607071822013
+          },
+          {
+            "subject": "sub-r047s027",
+            "dice": 0.8337028824870948
+          }
+        ]
+      },
+      "subject_checks": {
+        "clean": {
+          "expected_subjects": 130,
+          "observed_subjects": 130,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        },
+        "augmented": {
+          "expected_subjects": 130,
+          "observed_subjects": 130,
+          "duplicate_subjects": [],
+          "missing_subjects": [],
+          "unexpected_subjects": [],
+          "appears_exactly_once": true
+        }
+      },
+      "robustness_delta_dice_mean": 0.0330602271377001,
+      "clean_dice_mean": 0.5426739319781743,
+      "augmented_dice_mean": 0.5096137048404741,
+      "clean_jaccard_mean": 0.4172967253865468,
+      "augmented_jaccard_mean": 0.3870151644681617,
+      "clean_precision_mean": 0.5685781739219569,
+      "augmented_precision_mean": 0.525591895059725,
+      "clean_recall_mean": 0.6267860160337655,
+      "augmented_recall_mean": 0.6035134352491206,
+      "clean_abs_volume_diff_ratio_mean": 0.9847999617662794,
+      "augmented_abs_volume_diff_ratio_mean": 1.8784775972757026,
+      "fold_robustness_delta_mean": 0.03306022713770018
+    }
+  ],
+  "fold_level_summary": {
+    "clean": {
+      "dice": {
+        "mean": 0.518529077805064,
+        "std": 0.019757378348883692,
+        "min": 0.48513068103253704,
+        "median": 0.5236287850884144,
+        "max": 0.5426739319781743,
+        "n": 5
+      },
+      "jaccard": {
+        "mean": 0.4021029195583886,
+        "std": 0.015780508082272344,
+        "min": 0.3753926231151077,
+        "median": 0.4079557743021515,
+        "max": 0.4172967253865468,
+        "n": 5
+      },
+      "precision": {
+        "mean": 0.6283934391677541,
+        "std": 0.0317013259638378,
+        "min": 0.5685781739219569,
+        "median": 0.6352988280379118,
+        "max": 0.6616799704485788,
+        "n": 5
+      },
+      "recall": {
+        "mean": 0.5403851797129244,
+        "std": 0.048212649167048614,
+        "min": 0.48409942247099563,
+        "median": 0.5228886764980781,
+        "max": 0.6267860160337655,
+        "n": 5
+      },
+      "abs_volume_diff_ratio": {
+        "mean": 2.378029892530091,
+        "std": 3.0716202291241044,
+        "min": 0.6818269403196865,
+        "median": 0.9847999617662794,
+        "max": 8.5157423352564,
+        "n": 5
+      }
+    },
+    "augmented": {
+      "dice": {
+        "mean": 0.486836746934549,
+        "std": 0.017122379766185917,
+        "min": 0.46436158712484943,
+        "median": 0.4875517322540542,
+        "max": 0.5096137048404741,
+        "n": 5
+      },
+      "jaccard": {
+        "mean": 0.37236957049582287,
+        "std": 0.01353100128665782,
+        "min": 0.35385823384127946,
+        "median": 0.3716521865952373,
+        "max": 0.3878380038112311,
+        "n": 5
+      },
+      "precision": {
+        "mean": 0.5973101575860078,
+        "std": 0.04528578273898256,
+        "min": 0.525591895059725,
+        "median": 0.6101884862504905,
+        "max": 0.6549917585860406,
+        "n": 5
+      },
+      "recall": {
+        "mean": 0.5115707160319888,
+        "std": 0.049565110152723364,
+        "min": 0.4647290256423588,
+        "median": 0.48824180407663376,
+        "max": 0.6035134352491206,
+        "n": 5
+      },
+      "abs_volume_diff_ratio": {
+        "mean": 3.2078737779767126,
+        "std": 3.3289652177665663,
+        "min": 1.106928729942846,
+        "median": 1.844635138360617,
+        "max": 9.840295851497242,
+        "n": 5
+      }
+    },
+    "robustness_delta_dice": {
+      "fold_mean_summary": {
+        "mean": 0.031692330870514984,
+        "std": 0.0153214993185476,
+        "min": 0.013650367698697208,
+        "median": 0.0298868665766322,
+        "max": 0.059267197963564944,
+        "n": 5
+      },
+      "pooled_subject_summary": {
+        "mean": 0.03164800810886068,
+        "std": 0.09153455476185832,
+        "min": -0.28493320388941956,
+        "median": 0.0010825993809379097,
+        "max": 0.6899717515095946,
+        "n": 653
+      }
+    }
+  },
+  "pooled_per_subject_summary": {
+    "clean": {
+      "dice": {
+        "mean": 0.5184842928717461,
+        "std": 0.29812798648922273,
+        "min": 1.8397233055809897e-11,
+        "median": 0.5991939095459168,
+        "max": 0.9200594516998915,
+        "n": 653
+      },
+      "jaccard": {
+        "mean": 0.4020706888377579,
+        "std": 0.2621052201342065,
+        "min": 1.8397233055809897e-11,
+        "median": 0.4277493606284463,
+        "max": 0.8519537979645577,
+        "n": 653
+      },
+      "precision": {
+        "mean": 0.6284592515277856,
+        "std": 0.30947196745620675,
+        "min": 1.841586711076378e-11,
+        "median": 0.7340593020553583,
+        "max": 1.0,
+        "n": 653
+      },
+      "recall": {
+        "mean": 0.5402796600603885,
+        "std": 0.32329721378665344,
+        "min": 6.192717363995992e-11,
+        "median": 0.6214593428018682,
+        "max": 0.998571428572449,
+        "n": 653
+      },
+      "abs_volume_diff_ratio": {
+        "mean": 2.3827101215565074,
+        "std": 38.634126706439275,
+        "min": 0.0012862166022058932,
+        "median": 0.37739552062140436,
+        "max": 986.2908911583474,
+        "n": 653
+      }
+    },
+    "augmented": {
+      "dice": {
+        "mean": 0.4868362847628855,
+        "std": 0.2994462232709649,
+        "min": 1.2308146762190504e-11,
+        "median": 0.5618750361314104,
+        "max": 0.9201001285435693,
+        "n": 653
+      },
+      "jaccard": {
+        "mean": 0.3723754904693025,
+        "std": 0.25881606450464373,
+        "min": 1.2308146762190504e-11,
+        "median": 0.390699730730463,
+        "max": 0.8520235559459497,
+        "n": 653
+      },
+      "precision": {
+        "mean": 0.5974626408607532,
+        "std": 0.3168940147093014,
+        "min": 1.2583206452509932e-11,
+        "median": 0.7094882485128745,
+        "max": 1.0,
+        "n": 653
+      },
+      "recall": {
+        "mean": 0.511478242967653,
+        "std": 0.32150801668971835,
+        "min": 3.406226582076223e-11,
+        "median": 0.5859030840652836,
+        "max": 1.0,
+        "n": 653
+      },
+      "abs_volume_diff_ratio": {
+        "mean": 3.211997261621915,
+        "std": 45.85770186154916,
+        "min": 0.002254068496456118,
+        "median": 0.4134366914381481,
+        "max": 1163.5817970257856,
+        "n": 653
+      }
+    }
+  },
+  "coverage_checks": {
+    "clean": {
+      "expected_subjects": 653,
+      "observed_subjects": 653,
+      "duplicate_subjects": [],
+      "missing_subjects": [],
+      "unexpected_subjects": [],
+      "appears_exactly_once": true
+    },
+    "augmented": {
+      "expected_subjects": 653,
+      "observed_subjects": 653,
+      "duplicate_subjects": [],
+      "missing_subjects": [],
+      "unexpected_subjects": [],
+      "appears_exactly_once": true
+    }
+  },
+  "warnings": []
+}
