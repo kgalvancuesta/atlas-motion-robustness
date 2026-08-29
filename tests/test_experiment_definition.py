@@ -85,6 +85,8 @@ class ExperimentDefinitionTests(unittest.TestCase):
             root, definition, status = prepare_experiment(**kwargs)
             self.assertEqual(status, "created")
             self.assertEqual(definition["configuration"]["batch_size_per_gpu"], 1)
+            self.assertEqual(definition["configuration"]["early_stopping_patience"], 10)
+            self.assertEqual(definition["configuration"]["validation_interval"], 1)
             self.assertEqual(len(definition["dataset"]["source_inventory"]), 5)
             self.assertEqual(len(definition["dataset"]["mrart"]["sources"]), 3)
             manifest = load_challenge(root, definition)

@@ -27,6 +27,8 @@ from .rng import SEED_DERIVATION_VERSION, derive_seed
 DEFAULT_MODELS = ("base_cnn", "uxnet", "mednext", "swin")
 DEFAULT_REGIMES = ("standard", "augmented")
 DEFAULT_FOLDS = (0, 1, 2, 3, 4)
+ORIGINAL_EARLY_STOPPING_PATIENCE = 10
+ORIGINAL_VALIDATION_INTERVAL = 1
 MODEL_CONFIGURATIONS = {
     "base_cnn": {
         "entrypoint": "scripts/train_base_cnn.py",
@@ -261,6 +263,8 @@ def _request_signature(
         "training_regimes": regimes,
         "folds": folds,
         "max_epochs": int(epochs),
+        "early_stopping_patience": ORIGINAL_EARLY_STOPPING_PATIENCE,
+        "validation_interval": ORIGINAL_VALIDATION_INTERVAL,
         "corruption_replicate_count": int(replicate_count),
         "dataset_authority": dataset_authority,
     }
@@ -406,6 +410,8 @@ def prepare_experiment(
             "training_regimes": regimes_list,
             "folds": folds_list,
             "max_epochs": int(epochs),
+            "early_stopping_patience": ORIGINAL_EARLY_STOPPING_PATIENCE,
+            "validation_interval": ORIGINAL_VALIDATION_INTERVAL,
             "batch_size_per_gpu": 1,
             "nproc_per_node": 2,
             "augment_fraction": float(augment_fraction),

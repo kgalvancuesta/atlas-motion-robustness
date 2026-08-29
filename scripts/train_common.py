@@ -889,8 +889,14 @@ def run_training(
                     "ERROR: corrected training configuration conflicts with the immutable model definition: "
                     f"actual={scientific_actual}, expected={scientific_expected}"
                 )
-            if args.patience != 0 or args.val_interval != 1:
-                raise SystemExit("ERROR: the authoritative 45-epoch corrected experiment requires patience=0 and val_interval=1.")
+            expected_patience = int(experiment_definition["configuration"]["early_stopping_patience"])
+            expected_val_interval = int(experiment_definition["configuration"]["validation_interval"])
+            if args.patience != expected_patience or args.val_interval != expected_val_interval:
+                raise SystemExit(
+                    "ERROR: early-stopping/validation settings conflict with the immutable experiment definition: "
+                    f"patience={args.patience} expected={expected_patience}, "
+                    f"val_interval={args.val_interval} expected={expected_val_interval}."
+                )
             corrected_checkpoint_metadata = {
                 "experiment_id": experiment_definition["experiment_id"],
                 "generation": "corrected_experiment_v1",
