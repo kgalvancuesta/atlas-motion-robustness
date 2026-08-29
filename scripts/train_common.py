@@ -92,17 +92,24 @@ def extract_patch(vol: np.ndarray, center: Tuple[int, int, int], patch_size: Tup
     return patch
 
 
-def sample_center(mask: np.ndarray, patch_size: Tuple[int, int, int], lesion_prob: float) -> Tuple[int, int, int]:
+def sample_center(
+    mask: np.ndarray,
+    patch_size: Tuple[int, int, int],
+    lesion_prob: float,
+    *,
+    rng: random.Random | None = None,
+) -> Tuple[int, int, int]:
     del patch_size
-    if mask is not None and mask.max() > 0 and random.random() < lesion_prob:
+    source = rng or random
+    if mask is not None and mask.max() > 0 and source.random() < lesion_prob:
         coords = np.argwhere(mask > 0)
-        idx = random.randrange(coords.shape[0])
+        idx = source.randrange(coords.shape[0])
         center = coords[idx]
         return int(center[0]), int(center[1]), int(center[2])
     return (
-        random.randrange(mask.shape[0]),
-        random.randrange(mask.shape[1]),
-        random.randrange(mask.shape[2]),
+        source.randrange(mask.shape[0]),
+        source.randrange(mask.shape[1]),
+        source.randrange(mask.shape[2]),
     )
 
 
@@ -114,26 +121,83 @@ class PatchDataset(Dataset):
         patches_per_volume: int,
         lesion_prob: float,
         augmentation=None,
+        experiment_context: dict[str, Any] | None = None,
     ) -> None:
         self.samples = samples
         self.patch_size = patch_size
         self.patches_per_volume = patches_per_volume
         self.lesion_prob = lesion_prob
         self.augmentation = augmentation
+        self.experiment_context = experiment_context
+        self.epoch = 0
+
+    def set_epoch(self, epoch: int) -> None:
+        self.epoch = int(epoch)
 
     def __len__(self) -> int:
         return len(self.samples) * self.patches_per_volume
 
     def __getitem__(self, idx: int):
         sample = self.samples[idx // self.patches_per_volume]
+        patch_slot = idx % self.patches_per_volume
         vol, _, _ = load_nifti(sample.t1w_path)
         mask, _, _ = load_nifti(sample.mask_path)
         mask = binarize_mask(mask)
-        vol = normalize_volume(vol)
-        center = sample_center(mask, self.patch_size, self.lesion_prob)
+        if self.experiment_context is None:
+            vol = normalize_volume(vol)
+            center = sample_center(mask, self.patch_size, self.lesion_prob)
+        else:
+            from reproducibility.challenge import load_or_create_validated_cache, sample_legacy_recipe
+            from reproducibility.preprocessing import preprocess_volume
+            from reproducibility.rng import derive_seed
+
+            global_seed = int(self.experiment_context["global_seed"])
+            fold = int(self.experiment_context["fold"])
+            patch_seed = derive_seed(
+                global_seed,
+                "patch_center_sampling",
+                fold=fold,
+                subject_id=sample.subject,
+                epoch=self.epoch,
+                patch_slot=patch_slot,
+            )
+            center = sample_center(
+                mask,
+                self.patch_size,
+                self.lesion_prob,
+                rng=random.Random(patch_seed),
+            )
+            recipe = None
+            if sample.augment:
+                recipe = sample_legacy_recipe(
+                    tuple(int(value) for value in vol.shape),
+                    global_seed=global_seed,
+                    subject_id=sample.subject,
+                    fold=fold,
+                    replicate_id=0,
+                    namespace="training_augmentation",
+                    extra_identifiers={"epoch": self.epoch, "sample_role": "augmented_copy"},
+                )
+            mode = str(self.experiment_context["normalization_mode"])
+            if self.experiment_context.get("memory_mode") == "high":
+                cache_root = Path(str(self.experiment_context["cache_root"]))
+                challenge_label = "augmentation" if sample.augment else "clean"
+                vol, _cache_status = load_or_create_validated_cache(
+                    cache_root=cache_root,
+                    challenge_id=f"training-{challenge_label}-{self.experiment_context['experiment_id']}",
+                    normalization_mode=mode,
+                    fold=fold,
+                    replicate_id=self.epoch if sample.augment else 0,
+                    subject_id=sample.subject,
+                    source_sha256=self.experiment_context["source_sha256"][sample.subject],
+                    recipe_id=recipe["recipe_id"] if recipe else "clean",
+                    builder=lambda: preprocess_volume(vol, mode=mode, recipe=recipe)[0],
+                )
+            else:
+                vol, _diagnostics = preprocess_volume(vol, mode=mode, recipe=recipe)
         vol_patch = extract_patch(vol, center, self.patch_size)
         mask_patch = extract_patch(mask, center, self.patch_size)
-        if self.augmentation is not None and sample.augment:
+        if self.experiment_context is None and self.augmentation is not None and sample.augment:
             vol_patch, mask_patch = self.augmentation(vol_patch, mask_patch)
         vol_patch = torch.from_numpy(vol_patch[None, ...]).float()
         mask_patch = torch.from_numpy(mask_patch[None, ...]).float()
@@ -141,9 +205,19 @@ class PatchDataset(Dataset):
 
 
 class VolumeDataset(Dataset):
-    def __init__(self, samples: List[Sample], augmentation=None) -> None:
+    def __init__(
+        self,
+        samples: List[Sample],
+        augmentation=None,
+        experiment_context: dict[str, Any] | None = None,
+    ) -> None:
         self.samples = samples
         self.augmentation = augmentation
+        self.experiment_context = experiment_context
+        self.epoch = 0
+
+    def set_epoch(self, epoch: int) -> None:
+        self.epoch = int(epoch)
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -153,8 +227,43 @@ class VolumeDataset(Dataset):
         vol, _, _ = load_nifti(sample.t1w_path)
         mask, _, _ = load_nifti(sample.mask_path)
         mask = binarize_mask(mask)
-        vol = normalize_volume(vol)
-        if self.augmentation is not None and sample.augment:
+        if self.experiment_context is None:
+            vol = normalize_volume(vol)
+        else:
+            from reproducibility.challenge import load_or_create_validated_cache, sample_legacy_recipe
+            from reproducibility.preprocessing import preprocess_volume
+
+            recipe = None
+            if sample.augment:
+                recipe = sample_legacy_recipe(
+                    tuple(int(value) for value in vol.shape),
+                    global_seed=int(self.experiment_context["global_seed"]),
+                    subject_id=sample.subject,
+                    fold=int(self.experiment_context["fold"]),
+                    replicate_id=0,
+                    namespace="validation_augmentation",
+                    extra_identifiers={"epoch": self.epoch, "sample_role": "augmented_copy"},
+                )
+            mode = str(self.experiment_context["normalization_mode"])
+            if self.experiment_context.get("memory_mode") == "high":
+                vol, _cache_status = load_or_create_validated_cache(
+                    cache_root=Path(str(self.experiment_context["cache_root"])),
+                    challenge_id=(
+                        f"validation-augmentation-{self.experiment_context['experiment_id']}"
+                        if sample.augment
+                        else f"validation-clean-{self.experiment_context['experiment_id']}"
+                    ),
+                    normalization_mode=mode,
+                    fold=int(self.experiment_context["fold"]),
+                    replicate_id=self.epoch if sample.augment else 0,
+                    subject_id=sample.subject,
+                    source_sha256=self.experiment_context["source_sha256"][sample.subject],
+                    recipe_id=recipe["recipe_id"] if recipe else "clean",
+                    builder=lambda: preprocess_volume(vol, mode=mode, recipe=recipe)[0],
+                )
+            else:
+                vol, _diagnostics = preprocess_volume(vol, mode=mode, recipe=recipe)
+        if self.experiment_context is None and self.augmentation is not None and sample.augment:
             vol, mask = self.augmentation(vol, mask)
         vol = torch.from_numpy(vol[None, ...]).float()
         mask = torch.from_numpy(mask[None, ...]).float()
@@ -343,6 +452,25 @@ def build_argument_parser(description: str, default_loss: str) -> argparse.Argum
         "--augment_frac", type=float, default=0.5,
         help="Fraction of training subjects to duplicate with augmentation (default: 0.5)",
     )
+    parser.add_argument(
+        "--experiment_definition",
+        default=None,
+        help="Immutable corrected experiment definition. Omit for historical/original behavior.",
+    )
+    parser.add_argument("--experiment_fold", type=int, default=None)
+    parser.add_argument("--experiment_training_regime", choices=["standard", "augmented"], default=None)
+    parser.add_argument(
+        "--normalization_mode",
+        choices=["legacy", "artifact_then_normalize", "normalize_then_artifact"],
+        default=None,
+    )
+    parser.add_argument(
+        "--corrected_resume",
+        action="store_true",
+        help="Resume only from a compatible corrected operational last checkpoint.",
+    )
+    parser.add_argument("--experiment_memory_mode", choices=["low", "high"], default="low")
+    parser.add_argument("--experiment_cache_root", default=None)
     return parser
 
 
@@ -361,12 +489,16 @@ def get_device(local_rank: int) -> torch.device:
     return torch.device("cpu")
 
 
-def configure_runtime() -> None:
+def configure_runtime(*, strict: bool = False) -> None:
     if torch.cuda.is_available():
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
+        if strict and hasattr(torch.backends.cuda.matmul, "allow_tf32"):
+            torch.backends.cuda.matmul.allow_tf32 = False
+        if strict and hasattr(torch.backends.cudnn, "allow_tf32"):
+            torch.backends.cudnn.allow_tf32 = False
     if hasattr(torch, "use_deterministic_algorithms"):
-        torch.use_deterministic_algorithms(True, warn_only=True)
+        torch.use_deterministic_algorithms(True, warn_only=not strict)
 
 
 def make_grad_scaler(enabled: bool):
@@ -648,6 +780,34 @@ def write_validation_artifacts(
     return csv_path, meta_path
 
 
+def _capture_rng_state() -> dict[str, Any]:
+    state: dict[str, Any] = {
+        "python": random.getstate(),
+        "numpy": np.random.get_state(),
+        "torch_cpu": torch.get_rng_state(),
+    }
+    if torch.cuda.is_available():
+        state["torch_cuda"] = torch.cuda.get_rng_state_all()
+    return state
+
+
+def _restore_rng_state(state: dict[str, Any]) -> None:
+    random.setstate(state["python"])
+    np.random.set_state(state["numpy"])
+    torch.set_rng_state(state["torch_cpu"])
+    if torch.cuda.is_available() and "torch_cuda" in state:
+        torch.cuda.set_rng_state_all(state["torch_cuda"])
+
+
+def _atomic_torch_save(payload: dict[str, Any], path: Path) -> None:
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        torch.save(payload, temporary)
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def run_training(
     args: argparse.Namespace,
     *,
@@ -660,7 +820,90 @@ def run_training(
     activation_monitor: ActivationMonitor | None = None
 
     try:
-        _data_root, gt_root = resolve_data_paths(args)
+        data_root, gt_root = resolve_data_paths(args)
+        experiment_definition: dict[str, Any] | None = None
+        experiment_context: dict[str, Any] | None = None
+        corrected_checkpoint_metadata: dict[str, Any] | None = None
+        corrected_enabled = args.experiment_definition is not None
+        if corrected_enabled:
+            from reproducibility.core import PREPROCESSING_VERSION, read_json, sha256_file, validate_metadata
+            from reproducibility.experiment import fold_definition
+
+            experiment_definition = read_json(Path(args.experiment_definition))
+            if experiment_definition.get("generation") != "corrected_experiment_v1":
+                raise SystemExit("ERROR: --experiment_definition is not a corrected experiment definition.")
+            if args.experiment_fold is None or args.experiment_training_regime is None or args.normalization_mode is None:
+                raise SystemExit(
+                    "ERROR: corrected training requires --experiment_fold, --experiment_training_regime, and --normalization_mode."
+                )
+            if args.cv_fold != args.experiment_fold:
+                raise SystemExit("ERROR: --cv_fold and --experiment_fold must match.")
+            if args.normalization_mode != experiment_definition["configuration"]["normalization_mode"]:
+                raise SystemExit("ERROR: normalization mode conflicts with the immutable experiment definition.")
+            if args.max_epochs != int(experiment_definition["configuration"]["max_epochs"]):
+                raise SystemExit("ERROR: max epochs conflicts with the immutable experiment definition.")
+            if args.batch_size != 1:
+                raise SystemExit("ERROR: corrected experiments preserve batch size 1 per GPU.")
+            if sha256_file(Path(args.splits_json)) != experiment_definition["dataset"]["split_sha256"]:
+                raise SystemExit("ERROR: split file checksum conflicts with the immutable experiment definition.")
+            if model_name not in experiment_definition["configuration"]["models"]:
+                raise SystemExit(f"ERROR: model {model_name} is not defined by this experiment.")
+            if args.experiment_training_regime not in experiment_definition["configuration"]["training_regimes"]:
+                raise SystemExit("ERROR: training regime is not defined by this experiment.")
+            if args.experiment_training_regime == "standard" and args.augment is not None:
+                raise SystemExit("ERROR: standard corrected training cannot enable augmentation.")
+            if args.experiment_training_regime == "augmented" and args.augment != "motion_consistent":
+                raise SystemExit("ERROR: augmented corrected training requires --augment motion_consistent.")
+            fold_definition(experiment_definition, args.experiment_fold)
+            experiment_context = {
+                "experiment_id": experiment_definition["experiment_id"],
+                "global_seed": int(experiment_definition["seeds"]["global_seed"]),
+                "fold": int(args.experiment_fold),
+                "training_regime": args.experiment_training_regime,
+                "normalization_mode": args.normalization_mode,
+                "memory_mode": args.experiment_memory_mode,
+                "cache_root": args.experiment_cache_root,
+                "source_sha256": {
+                    entry["subject_id"]: entry["sha256"]
+                    for entry in experiment_definition["dataset"]["source_inventory"]
+                },
+            }
+            if args.experiment_memory_mode == "high" and not args.experiment_cache_root:
+                raise SystemExit("ERROR: --experiment_memory_mode high requires --experiment_cache_root.")
+            model_configuration = experiment_definition["model_configurations"][model_name]
+            scientific_actual = {
+                "patch_size": list(args.patch_size),
+                "patches_per_volume": int(args.patches_per_volume),
+                "lesion_probability": float(args.lesion_prob),
+                "learning_rate": float(args.lr),
+                "weight_decay": float(args.weight_decay),
+                "accumulation_steps": int(args.accum_steps),
+                "loss": args.loss,
+                "amp": bool(args.amp),
+            }
+            scientific_expected = {
+                key: model_configuration[key] for key in scientific_actual
+            }
+            if scientific_actual != scientific_expected:
+                raise SystemExit(
+                    "ERROR: corrected training configuration conflicts with the immutable model definition: "
+                    f"actual={scientific_actual}, expected={scientific_expected}"
+                )
+            if args.patience != 0 or args.val_interval != 1:
+                raise SystemExit("ERROR: the authoritative 45-epoch corrected experiment requires patience=0 and val_interval=1.")
+            corrected_checkpoint_metadata = {
+                "experiment_id": experiment_definition["experiment_id"],
+                "generation": "corrected_experiment_v1",
+                "model": model_name,
+                "model_configuration_id": model_configuration["model_configuration_id"],
+                "fold": int(args.experiment_fold),
+                "training_regime": args.experiment_training_regime,
+                "normalization_mode": args.normalization_mode,
+                "preprocessing_version": PREPROCESSING_VERSION,
+                "fold_definition_id": experiment_definition["dataset"]["fold_definition_id"],
+                "global_seed": int(experiment_definition["seeds"]["global_seed"]),
+                "training_run_seed": int(args.seed),
+            }
         patch_size = tuple(args.patch_size)
         if patch_size_validator is not None:
             patch_size_validator(patch_size)
@@ -670,6 +913,8 @@ def run_training(
             raise SystemExit(f"No labeled samples found under {gt_root}")
 
         splits_path = Path(args.splits_json)
+        if corrected_enabled and (args.make_splits or not splits_path.exists()):
+            raise SystemExit("ERROR: corrected experiments never create or regenerate a missing split.")
         if args.make_splits or not splits_path.exists():
             if args.cv_fold is not None:
                 raise SystemExit("ERROR: --cv_fold cannot be used with --make_splits or a missing split file.")
@@ -689,27 +934,47 @@ def run_training(
         n_aug = 0
         n_dev_aug = 0
         if args.augment:
-            try:
-                from torchio_augmentations import get_torchio_augmentation
-            except ImportError as exc:
-                raise ImportError(
-                    "TorchIO augmentation was requested, but the required 'torchio' dependency is not installed."
-                ) from exc
-            augmentation = get_torchio_augmentation(preset=args.augment)
-            # Use a dedicated RNG seeded from the main seed so augmented subject
-            # selection is deterministic and consistent across models
-            aug_rng = random.Random(args.seed + 7)
+            if corrected_enabled:
+                assert experiment_definition is not None
+                from reproducibility.experiment import fold_definition
 
-            n_aug = int(len(train_samples) * args.augment_frac)
-            aug_subjects = aug_rng.sample(train_samples, n_aug)
-            aug_copies = [Sample(s.subject, s.t1w_path, s.mask_path, augment=True) for s in aug_subjects]
-            train_samples = train_samples + aug_copies
-
-            # Mark the same fraction of dev samples for augmentation
-            n_dev_aug = int(len(dev_samples) * args.augment_frac)
-            dev_aug_subjects = aug_rng.sample(dev_samples, n_dev_aug)
-            dev_aug_copies = [Sample(s.subject, s.t1w_path, s.mask_path, augment=True) for s in dev_aug_subjects]
-            dev_samples = dev_samples + dev_aug_copies
+                fold_payload = fold_definition(experiment_definition, int(args.experiment_fold))
+                train_by_id = {sample.subject: sample for sample in train_samples}
+                dev_by_id = {sample.subject: sample for sample in dev_samples}
+                train_duplicate_ids = list(fold_payload["duplicated_subjects"]["train_ids"])
+                dev_duplicate_ids = list(fold_payload["duplicated_subjects"]["val_ids"])
+                if not set(train_duplicate_ids).issubset(train_by_id) or not set(dev_duplicate_ids).issubset(dev_by_id):
+                    raise SystemExit("ERROR: stored duplicate-subject selection conflicts with the resolved split.")
+                aug_copies = [
+                    Sample(subject, train_by_id[subject].t1w_path, train_by_id[subject].mask_path, augment=True)
+                    for subject in train_duplicate_ids
+                ]
+                dev_aug_copies = [
+                    Sample(subject, dev_by_id[subject].t1w_path, dev_by_id[subject].mask_path, augment=True)
+                    for subject in dev_duplicate_ids
+                ]
+                n_aug = len(aug_copies)
+                n_dev_aug = len(dev_aug_copies)
+                train_samples = train_samples + aug_copies
+                dev_samples = dev_samples + dev_aug_copies
+            else:
+                try:
+                    from torchio_augmentations import get_torchio_augmentation
+                except ImportError as exc:
+                    raise ImportError(
+                        "TorchIO augmentation was requested, but the required 'torchio' dependency is not installed."
+                    ) from exc
+                augmentation = get_torchio_augmentation(preset=args.augment)
+                # Historical behavior: preserve the original dedicated-but-shared stream.
+                aug_rng = random.Random(args.seed + 7)
+                n_aug = int(len(train_samples) * args.augment_frac)
+                aug_subjects = aug_rng.sample(train_samples, n_aug)
+                aug_copies = [Sample(s.subject, s.t1w_path, s.mask_path, augment=True) for s in aug_subjects]
+                train_samples = train_samples + aug_copies
+                n_dev_aug = int(len(dev_samples) * args.augment_frac)
+                dev_aug_subjects = aug_rng.sample(dev_samples, n_dev_aug)
+                dev_aug_copies = [Sample(s.subject, s.t1w_path, s.mask_path, augment=True) for s in dev_aug_subjects]
+                dev_samples = dev_samples + dev_aug_copies
 
         run_dir = Path(args.run_dir)
         (run_dir / "checkpoints").mkdir(parents=True, exist_ok=True)
@@ -719,10 +984,17 @@ def run_training(
         (run_dir / "raw_preds").mkdir(parents=True, exist_ok=True)
 
         device = get_device(local_rank)
-        configure_runtime()
+        configure_runtime(strict=corrected_enabled)
 
-        train_ds = PatchDataset(train_samples, patch_size, args.patches_per_volume, args.lesion_prob, augmentation=augmentation)
-        dev_ds = VolumeDataset(dev_samples, augmentation=augmentation)
+        train_ds = PatchDataset(
+            train_samples,
+            patch_size,
+            args.patches_per_volume,
+            args.lesion_prob,
+            augmentation=augmentation,
+            experiment_context=experiment_context,
+        )
+        dev_ds = VolumeDataset(dev_samples, augmentation=augmentation, experiment_context=experiment_context)
 
         if not distributed or dist.get_rank() == 0:
             print(f"Device: {device}")
@@ -731,7 +1003,29 @@ def run_training(
             print(f"Augmentation: {args.augment or 'none'} ({n_aug} train + {n_dev_aug} dev augmented subjects added)")
             print(f"Split resolution: {json.dumps(split_resolution, sort_keys=True)}")
 
-        train_sampler = DistributedSampler(train_ds) if distributed else None
+        if corrected_enabled:
+            from reproducibility.rng import CorrectedSampler, derive_seed
+
+            clean_indices: list[int] = []
+            augmented_indices: list[int] = []
+            for sample_index, sample in enumerate(train_samples):
+                target = augmented_indices if sample.augment else clean_indices
+                target.extend(
+                    range(
+                        sample_index * args.patches_per_volume,
+                        (sample_index + 1) * args.patches_per_volume,
+                    )
+                )
+            train_sampler = CorrectedSampler(
+                clean_indices,
+                augmented_indices,
+                global_seed=int(experiment_context["global_seed"]),
+                fold=int(args.experiment_fold),
+                num_replicas=dist.get_world_size() if distributed else 1,
+                rank=dist.get_rank() if distributed else 0,
+            )
+        else:
+            train_sampler = DistributedSampler(train_ds) if distributed else None
 
         if args.num_workers is None:
             args.num_workers = 4 if torch.cuda.is_available() else 0
@@ -741,18 +1035,86 @@ def run_training(
         git_commit = get_git_commit(repo_root)
         ddp_find_unused_parameters = model_name == "mednext"
         config_path = run_dir / "config" / "train_config.json"
-        config_path.write_text(
-            json.dumps(
-                {
-                    "args": vars(args),
-                    "ddp_find_unused_parameters": ddp_find_unused_parameters,
-                    "git_commit": git_commit,
-                    "model_name": model_name,
-                    "split_resolution": split_resolution,
-                },
-                indent=2,
+        recorded_args = dict(vars(args))
+        if not corrected_enabled:
+            for key in (
+                "experiment_definition",
+                "experiment_fold",
+                "experiment_training_regime",
+                "normalization_mode",
+                "corrected_resume",
+                "experiment_memory_mode",
+                "experiment_cache_root",
+            ):
+                recorded_args.pop(key, None)
+        config_payload = {
+            "args": recorded_args,
+            "ddp_find_unused_parameters": ddp_find_unused_parameters,
+            "git_commit": git_commit,
+            "model_name": model_name,
+            "split_resolution": split_resolution,
+        }
+        if corrected_enabled:
+            config_payload["corrected_experiment_metadata"] = corrected_checkpoint_metadata
+            scientific_keys = {
+                "max_epochs",
+                "batch_size",
+                "patch_size",
+                "patches_per_volume",
+                "lesion_prob",
+                "lr",
+                "weight_decay",
+                "accum_steps",
+                "val_interval",
+                "patience",
+                "seed",
+                "amp",
+                "loss",
+                "augment",
+                "augment_frac",
+                "experiment_fold",
+                "experiment_training_regime",
+                "normalization_mode",
+            }
+            immutable_training_request = {
+                key: value for key, value in vars(args).items() if key in scientific_keys
+            }
+            immutable_training_request["experiment_id"] = experiment_definition["experiment_id"]
+            immutable_training_request["split_sha256"] = experiment_definition["dataset"]["split_sha256"]
+            config_payload["immutable_training_request"] = immutable_training_request
+            if not distributed or dist.get_rank() == 0:
+                if config_path.exists():
+                    existing_config = json.loads(config_path.read_text())
+                    if existing_config.get("immutable_training_request") != immutable_training_request:
+                        raise RuntimeError(
+                            f"Corrected training configuration conflicts with existing {config_path}; use a new experiment ID."
+                        )
+                else:
+                    config_path.write_text(json.dumps(config_payload, indent=2))
+            if distributed:
+                dist.barrier()
+        else:
+            config_path.write_text(json.dumps(config_payload, indent=2))
+
+        loader_generator = None
+        worker_init_fn = None
+        if corrected_enabled:
+            loader_generator = torch.Generator()
+            loader_generator.manual_seed(
+                derive_seed(
+                    int(experiment_context["global_seed"]),
+                    "dataloader_worker_base",
+                    fold=int(args.experiment_fold),
+                    rank=dist.get_rank() if distributed else 0,
+                )
             )
-        )
+
+            def seed_worker(_worker_id: int) -> None:
+                worker_seed = torch.initial_seed() % (2**32)
+                random.seed(worker_seed)
+                np.random.seed(worker_seed)
+
+            worker_init_fn = seed_worker
 
         train_loader = DataLoader(
             train_ds,
@@ -761,6 +1123,8 @@ def run_training(
             sampler=train_sampler,
             num_workers=args.num_workers,
             pin_memory=pin_memory,
+            generator=loader_generator,
+            worker_init_fn=worker_init_fn,
         )
         dev_loader = DataLoader(dev_ds, batch_size=1, shuffle=False, num_workers=0)
 
@@ -785,13 +1149,48 @@ def run_training(
         epochs_without_improvement = 0
         global_step = 0
         consecutive_amp_overflows = 0
+        start_epoch = 1
         log_path = run_dir / "logs" / "train_log.csv"
         if not log_path.exists() and (not distributed or dist.get_rank() == 0):
             log_path.write_text("epoch,train_loss,dev_dice,dev_loss\n")
 
-        for epoch in range(1, args.max_epochs + 1):
+        last_checkpoint_path = run_dir / "checkpoints" / "last.pt"
+        if corrected_enabled and args.corrected_resume:
+            if not last_checkpoint_path.exists():
+                raise RuntimeError(f"Corrected resume requested but operational checkpoint is missing: {last_checkpoint_path}")
+            try:
+                resume_state = torch.load(last_checkpoint_path, map_location=device, weights_only=False)
+            except TypeError:
+                resume_state = torch.load(last_checkpoint_path, map_location=device)
+            if corrected_checkpoint_metadata is None:
+                raise AssertionError("Missing corrected-experiment checkpoint metadata")
+            from reproducibility.core import validate_metadata
+
+            validate_metadata(
+                resume_state.get("corrected_experiment_metadata", {}),
+                corrected_checkpoint_metadata,
+                context=str(last_checkpoint_path),
+            )
+            unwrap_model(model).load_state_dict(resume_state["model"])
+            optimizer.load_state_dict(resume_state["optimizer"])
+            scaler.load_state_dict(resume_state["scaler"])
+            best_dice = float(resume_state["best_dice"])
+            epochs_without_improvement = int(resume_state["epochs_without_improvement"])
+            global_step = int(resume_state["global_step"])
+            start_epoch = int(resume_state["epoch"]) + 1
+            rank = dist.get_rank() if distributed else 0
+            rng_states = resume_state.get("rng_states_by_rank", [])
+            if rank >= len(rng_states):
+                raise RuntimeError(f"Resume checkpoint lacks RNG state for rank {rank}")
+            _restore_rng_state(rng_states[rank])
+            if main_process:
+                print(f"Resuming corrected training at epoch {start_epoch} from {last_checkpoint_path}")
+
+        for epoch in range(start_epoch, args.max_epochs + 1):
             if train_sampler is not None:
                 train_sampler.set_epoch(epoch)
+            train_ds.set_epoch(epoch)
+            dev_ds.set_epoch(epoch)
 
             model.train()
             running = 0.0
@@ -1071,14 +1470,14 @@ def run_training(
                 if dev_dice > best_dice:
                     best_dice = dev_dice
                     epochs_without_improvement = 0
-                    torch.save(
-                        {
-                            "model": unwrap_model(model).state_dict(),
-                            "epoch": epoch,
-                            "best_dice": best_dice,
-                        },
-                        ckpt_path,
-                    )
+                    best_payload = {
+                        "model": unwrap_model(model).state_dict(),
+                        "epoch": epoch,
+                        "best_dice": best_dice,
+                    }
+                    if corrected_enabled:
+                        best_payload["corrected_experiment_metadata"] = corrected_checkpoint_metadata
+                    torch.save(best_payload, ckpt_path)
                 else:
                     epochs_without_improvement += 1
 
@@ -1098,6 +1497,32 @@ def run_training(
             if not distributed or dist.get_rank() == 0:
                 with log_path.open("a") as f:
                     f.write(f"{epoch},{running / max(1, len(train_loader))},{dev_dice},{dev_loss}\n")
+
+            if corrected_enabled:
+                local_rng_state = _capture_rng_state()
+                if distributed:
+                    rng_states_by_rank: list[dict[str, Any] | None] = [None] * dist.get_world_size()
+                    dist.all_gather_object(rng_states_by_rank, local_rng_state)
+                else:
+                    rng_states_by_rank = [local_rng_state]
+                if main_process:
+                    _atomic_torch_save(
+                        {
+                            "operational_checkpoint": True,
+                            "model": unwrap_model(model).state_dict(),
+                            "optimizer": optimizer.state_dict(),
+                            "scaler": scaler.state_dict(),
+                            "epoch": epoch,
+                            "best_dice": best_dice,
+                            "epochs_without_improvement": epochs_without_improvement,
+                            "global_step": global_step,
+                            "rng_states_by_rank": rng_states_by_rank,
+                            "corrected_experiment_metadata": corrected_checkpoint_metadata,
+                        },
+                        last_checkpoint_path,
+                    )
+                if distributed:
+                    dist.barrier()
 
             if should_stop:
                 break
