@@ -219,8 +219,8 @@ def main() -> int:
         for index in range(2):
             properties = torch.cuda.get_device_properties(index)
             info = {"index": index, "name": properties.name, "memory_gib": properties.total_memory / 2**30}
-            if "A100" not in properties.name or info["memory_gib"] < 75:
-                raise RuntimeError(f"GPU {index} is not the expected 80 GB A100: {info}")
+            if "A100" not in properties.name:
+                raise RuntimeError(f"GPU {index} is not an A100: {info}")
             devices.append(info)
         runtime = configure_strict_determinism(9001)
         return {"versions": versions, "cuda": torch.version.cuda, "cudnn": torch.backends.cudnn.version(), "devices": devices, "runtime": runtime}

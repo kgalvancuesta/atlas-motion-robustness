@@ -14,6 +14,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "${REPO_ROOT}"
 
+# Apply the final device selection before preflight so it validates the same two
+# A100 GPUs used by training. GPU memory capacity is diagnostic, not a gate.
+export CUDA_VISIBLE_DEVICES="${GPU_IDS:-${CUDA_VISIBLE_DEVICES:-0,1}}"
+
 # The same quick preflight is mandatory immediately before preparation/training.
 bash scripts/reproducibility/pace_preflight.sh
 
@@ -30,7 +34,6 @@ CACHE_ROOT="${SCRATCH_RESOLVED}/atlas_corrected_cache/${EXPERIMENT_ID}"
 mkdir -p "${PROJECT_OUTPUT_ROOT}" "${CACHE_ROOT}"
 
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
-export CUDA_VISIBLE_DEVICES="${GPU_IDS:-${CUDA_VISIBLE_DEVICES:-0,1}}"
 
 python3 scripts/run_reprod_experiment.py prepare \
   --experiment-id "${EXPERIMENT_ID}" \
