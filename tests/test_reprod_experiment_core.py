@@ -22,7 +22,7 @@ from reproducibility.core import (  # noqa: E402
     write_json_new,
 )
 from reproducibility.rng import CorrectedSampler, derive_seed  # noqa: E402
-from train_common import sample_center  # noqa: E402
+from train_common import sample_center, set_seed  # noqa: E402
 
 
 class ImmutableDefinitionTests(unittest.TestCase):
@@ -62,6 +62,14 @@ class IndependentRngTests(unittest.TestCase):
         different = derive_seed(9001, "augmentation_parameters", fold=0, subject_id="sub-1", epoch=1, patch_slot=0)
         self.assertEqual(first, second)
         self.assertNotEqual(first, different)
+
+    def test_training_seed_accepts_derived_63_bit_seed(self) -> None:
+        seed = derive_seed(9001, "model_initialization", model="base_cnn", fold=0)
+        self.assertGreater(seed, (2**32) - 1)
+        set_seed(seed)
+        actual = int(np.random.randint(0, 2**31))
+        expected = int(np.random.RandomState(seed % (2**32)).randint(0, 2**31))
+        self.assertEqual(actual, expected)
 
     def test_augmentation_does_not_change_clean_order_or_patch_center(self) -> None:
         clean = list(range(12))
