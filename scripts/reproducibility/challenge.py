@@ -291,6 +291,7 @@ def load_or_create_validated_cache(
     source_sha256: str,
     recipe_id: str,
     builder,
+    read_only: bool = False,
 ) -> tuple[np.ndarray, str]:
     array_path, metadata_path = cache_paths(
         cache_root,
@@ -310,22 +311,28 @@ def load_or_create_validated_cache(
         "source_sha256": source_sha256,
         "recipe_id": recipe_id,
     }
+    def read_existing() -> tuple[np.ndarray, str]:
+        if not array_path.exists() or not metadata_path.exists():
+            raise ConflictError(f"Missing/incomplete memory-high cache entry: {array_path}")
+        metadata = read_json(metadata_path)
+        mismatches = {key: (metadata.get(key), value) for key, value in expected.items() if metadata.get(key) != value}
+        if mismatches:
+            raise ConflictError(f"Incompatible memory-high cache metadata at {metadata_path}: {mismatches}")
+        array = np.load(array_path, allow_pickle=False)
+        if array_sha256(array) != metadata.get("array_sha256"):
+            raise ConflictError(f"Checksum validation failed for memory-high cache: {array_path}")
+        return np.asarray(array, dtype=np.float32), "reused"
+
+    # A stopped old run can be tested without touching its arrays, metadata, or
+    # lock files. Missing entries fail explicitly; diagnostics never rebuild them.
+    if read_only:
+        return read_existing()
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     lock_path = metadata_path.with_suffix(metadata_path.suffix + ".lock")
     with lock_path.open("a+b") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         if array_path.exists() or metadata_path.exists():
-            if not array_path.exists() or not metadata_path.exists():
-                raise ConflictError(f"Incomplete memory-high cache entry: {array_path}")
-            metadata = read_json(metadata_path)
-            mismatches = {key: (metadata.get(key), value) for key, value in expected.items() if metadata.get(key) != value}
-            if mismatches:
-                raise ConflictError(f"Incompatible memory-high cache metadata at {metadata_path}: {mismatches}")
-            array = np.load(array_path, allow_pickle=False)
-            actual_checksum = array_sha256(array)
-            if actual_checksum != metadata.get("array_sha256"):
-                raise ConflictError(f"Checksum validation failed for memory-high cache: {array_path}")
-            return np.asarray(array, dtype=np.float32), "reused"
+            return read_existing()
 
         array = np.asarray(builder(), dtype=np.float32)
         checksum = array_sha256(array)
