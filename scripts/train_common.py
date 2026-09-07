@@ -35,6 +35,23 @@ class Sample:
     augment: bool = False
 
 
+def corrected_training_samples(samples: List[Sample], fold: dict, regime: str) -> tuple[List[Sample], List[Sample]]:
+    """Keep checkpoint selection clean; append only the stored training duplicates."""
+    train = select_samples(samples, fold["train_ids"])
+    validation = select_samples(samples, fold["val_ids"])
+    if any(sample.augment for sample in train + validation):
+        raise ValueError("Corrected split originals must be clean")
+    if regime == "augmented":
+        by_id = {sample.subject: sample for sample in train}
+        duplicate_ids = fold["duplicated_subjects"]["train_ids"]
+        if not set(duplicate_ids).issubset(by_id):
+            raise ValueError("Stored training duplicates conflict with the resolved split")
+        train += [Sample(sid, by_id[sid].t1w_path, by_id[sid].mask_path, augment=True) for sid in duplicate_ids]
+    elif regime != "standard":
+        raise ValueError(f"Unknown corrected training regime: {regime}")
+    return train, validation
+
+
 def list_labeled_samples(deriv_root: Path) -> List[Sample]:
     samples: List[Sample] = []
     for sub_dir in sorted(deriv_root.glob("sub-*/ses-1/anat")):
@@ -137,6 +154,65 @@ class PatchDataset(Dataset):
     def __len__(self) -> int:
         return len(self.samples) * self.patches_per_volume
 
+    def batch_identity(self, idx: int) -> dict[str, Any]:
+        """Identify an already-loaded batch without I/O, recipes, or RNG calls."""
+        sample = self.samples[idx // self.patches_per_volume]
+        return {"dataset_index": idx, "subject_id": sample.subject,
+                "sample_role": "augmented_copy" if sample.augment else "clean_control",
+                "patch_slot": idx % self.patches_per_volume}
+
+    def describe_index(self, idx: int) -> dict[str, Any]:
+        """Reconstruct the identity and deterministic recipe for one dataset index."""
+        if self.experiment_context is None:
+            raise RuntimeError("Exact patch descriptions require a corrected experiment context")
+        if not 0 <= idx < len(self):
+            raise IndexError(f"Patch dataset index {idx} is outside [0, {len(self)})")
+
+        from reproducibility.challenge import sample_legacy_recipe
+        from reproducibility.rng import derive_seed
+
+        sample_index = idx // self.patches_per_volume
+        patch_slot = idx % self.patches_per_volume
+        sample = self.samples[sample_index]
+        vol, _, _ = load_nifti(sample.t1w_path)
+        mask, _, _ = load_nifti(sample.mask_path)
+        mask = binarize_mask(mask)
+        global_seed = int(self.experiment_context["global_seed"])
+        fold = int(self.experiment_context["fold"])
+        patch_seed = derive_seed(
+            global_seed,
+            "patch_center_sampling",
+            fold=fold,
+            subject_id=sample.subject,
+            epoch=self.epoch,
+            patch_slot=patch_slot,
+        )
+        center = sample_center(mask, self.patch_size, self.lesion_prob, rng=random.Random(patch_seed))
+        recipe = None
+        if sample.augment:
+            recipe = sample_legacy_recipe(
+                tuple(int(value) for value in vol.shape),
+                global_seed=global_seed,
+                subject_id=sample.subject,
+                fold=fold,
+                replicate_id=0,
+                namespace="training_augmentation",
+                extra_identifiers={"epoch": self.epoch, "sample_role": "augmented_copy"},
+            )
+        return {
+            "dataset_index": int(idx),
+            "sample_index": int(sample_index),
+            "subject_id": sample.subject,
+            "sample_role": "augmented_copy" if sample.augment else "clean_control",
+            "is_augmented_copy": bool(sample.augment),
+            "patch_slot": int(patch_slot),
+            "patch_center": [int(value) for value in center],
+            "patch_seed": int(patch_seed),
+            "t1w_path": str(sample.t1w_path),
+            "mask_path": str(sample.mask_path),
+            "augmentation_recipe": recipe,
+        }
+
     def __getitem__(self, idx: int):
         sample = self.samples[idx // self.patches_per_volume]
         patch_slot = idx % self.patches_per_volume
@@ -192,6 +268,7 @@ class PatchDataset(Dataset):
                     source_sha256=self.experiment_context["source_sha256"][sample.subject],
                     recipe_id=recipe["recipe_id"] if recipe else "clean",
                     builder=lambda: preprocess_volume(vol, mode=mode, recipe=recipe)[0],
+                    read_only=bool(self.experiment_context.get("cache_read_only", False)),
                 )
             else:
                 vol, _diagnostics = preprocess_volume(vol, mode=mode, recipe=recipe)
@@ -260,6 +337,7 @@ class VolumeDataset(Dataset):
                     source_sha256=self.experiment_context["source_sha256"][sample.subject],
                     recipe_id=recipe["recipe_id"] if recipe else "clean",
                     builder=lambda: preprocess_volume(vol, mode=mode, recipe=recipe)[0],
+                    read_only=bool(self.experiment_context.get("cache_read_only", False)),
                 )
             else:
                 vol, _diagnostics = preprocess_volume(vol, mode=mode, recipe=recipe)
@@ -643,28 +721,65 @@ def run_fp32_probe(
     *,
     accum_steps: int,
     top_k: int,
+    collective_safe: bool = False,
 ) -> dict[str, Any]:
+    if not collective_safe:
+        model.zero_grad(set_to_none=True)
+        probe: dict[str, Any] = {}
+        try:
+            logits = model(x)
+            if isinstance(logits, (list, tuple)):
+                raise AssertionError("Unexpected deep supervision outputs in fp32 probe")
+            assert_logits_shape(logits, x)
+            probe["logits_are_finite"] = bool(torch.isfinite(logits).all().item())
+            probe["max_abs_logit"] = float(logits.detach().abs().amax().item()) if logits.numel() > 0 else 0.0
+            loss = loss_fn(logits.float(), y.float()) / accum_steps
+            probe["loss"] = float(loss.detach().item())
+            probe["loss_is_finite"] = bool(torch.isfinite(loss).item())
+            if probe["loss_is_finite"]:
+                loss.backward()
+                probe["gradients"] = collect_gradient_diagnostics(model, top_k=top_k)
+            else:
+                probe["gradients"] = None
+        except Exception as exc:
+            probe["error"] = f"{type(exc).__name__}: {exc}"
+        finally:
+            model.zero_grad(set_to_none=True)
+        return probe
+
+    from reproducibility.numerics import _capture_forward_rng, _restore_forward_rng, collective_all
+
+    initial_rng = _capture_forward_rng(x.device)
+    buffers = [(value, value.detach().clone()) for value in model.buffers()]
     model.zero_grad(set_to_none=True)
     probe: dict[str, Any] = {}
+    loss = None
     try:
-        logits = model(x)
-        if isinstance(logits, (list, tuple)):
-            raise AssertionError("Unexpected deep supervision outputs in fp32 probe")
-        assert_logits_shape(logits, x)
-        probe["logits_are_finite"] = bool(torch.isfinite(logits).all().item())
-        probe["max_abs_logit"] = float(logits.detach().abs().amax().item()) if logits.numel() > 0 else 0.0
-        loss = loss_fn(logits.float(), y.float()) / accum_steps
-        probe["loss"] = float(loss.detach().item())
-        probe["loss_is_finite"] = bool(torch.isfinite(loss).item())
-        if probe["loss_is_finite"]:
+        try:
+            with torch.autocast(device_type=x.device.type, enabled=False):
+                logits = model(x)
+            if isinstance(logits, (list, tuple)):
+                raise AssertionError("Unexpected deep supervision outputs in fp32 probe")
+            assert_logits_shape(logits, x)
+            probe["logits_are_finite"] = bool(torch.isfinite(logits).all().item())
+            probe["max_abs_logit"] = float(logits.detach().abs().amax().item()) if logits.numel() > 0 else 0.0
+            loss = loss_fn(logits.float(), y.float()) / accum_steps
+            probe["loss"] = float(loss.detach().item())
+            probe["loss_is_finite"] = bool(torch.isfinite(loss).item())
+        except Exception as exc:
+            probe["error"] = f"{type(exc).__name__}: {exc}"
+        ready = "error" not in probe and probe.get("logits_are_finite", False) and probe.get("loss_is_finite", False)
+        if collective_all(ready, x.device):
             loss.backward()
             probe["gradients"] = collect_gradient_diagnostics(model, top_k=top_k)
         else:
             probe["gradients"] = None
-    except Exception as exc:
-        probe["error"] = f"{type(exc).__name__}: {exc}"
     finally:
         model.zero_grad(set_to_none=True)
+        with torch.no_grad():
+            for value, saved in buffers:
+                value.copy_(saved)
+        _restore_forward_rng(initial_rng, x.device)
     return probe
 
 
@@ -794,9 +909,11 @@ def _capture_rng_state() -> dict[str, Any]:
 def _restore_rng_state(state: dict[str, Any]) -> None:
     random.setstate(state["python"])
     np.random.set_state(state["numpy"])
-    torch.set_rng_state(state["torch_cpu"])
+    # torch.load(map_location=device) also relocates RNG byte tensors. Generator
+    # state APIs require CPU byte tensors even when restoring a CUDA generator.
+    torch.set_rng_state(state["torch_cpu"].cpu())
     if torch.cuda.is_available() and "torch_cuda" in state:
-        torch.cuda.set_rng_state_all(state["torch_cuda"])
+        torch.cuda.set_rng_state_all([value.cpu() for value in state["torch_cuda"]])
 
 
 def _atomic_torch_save(payload: dict[str, Any], path: Path) -> None:
@@ -820,6 +937,20 @@ def run_training(
     activation_monitor: ActivationMonitor | None = None
 
     try:
+        diagnostic_epoch = getattr(args, "diagnostic_replay_epoch", None)
+        diagnostic_step = getattr(args, "diagnostic_replay_step", None)
+        diagnostic_output_value = getattr(args, "diagnostic_output", None)
+        diagnostic_requested = any(
+            value is not None for value in (diagnostic_epoch, diagnostic_step, diagnostic_output_value)
+        )
+        if diagnostic_requested and any(
+            value is None for value in (diagnostic_epoch, diagnostic_step, diagnostic_output_value)
+        ):
+            raise RuntimeError("Diagnostic replay requires epoch, step, and output together")
+
+        verify_fix = bool(getattr(args, "diagnostic_verify_fix", False))
+        if verify_fix and not diagnostic_requested:
+            raise RuntimeError("Fix verification requires the explicit diagnostic replay entrypoint")
         data_root, gt_root = resolve_data_paths(args)
         experiment_definition: dict[str, Any] | None = None
         experiment_context: dict[str, Any] | None = None
@@ -827,9 +958,11 @@ def run_training(
         corrected_enabled = args.experiment_definition is not None
         if corrected_enabled:
             from reproducibility.core import PREPROCESSING_VERSION, read_json, sha256_file, validate_metadata
-            from reproducibility.experiment import fold_definition
+            from reproducibility.experiment import fold_definition, validate_training_protocol
 
             experiment_definition = read_json(Path(args.experiment_definition))
+            if not diagnostic_requested:
+                validate_training_protocol(experiment_definition)
             if experiment_definition.get("generation") != "corrected_experiment_v1":
                 raise SystemExit("ERROR: --experiment_definition is not a corrected experiment definition.")
             if args.experiment_fold is None or args.experiment_training_regime is None or args.normalization_mode is None:
@@ -844,6 +977,8 @@ def run_training(
                 raise SystemExit("ERROR: max epochs conflicts with the immutable experiment definition.")
             if args.batch_size != 1:
                 raise SystemExit("ERROR: corrected experiments preserve batch size 1 per GPU.")
+            if args.accum_steps != 1:
+                raise SystemExit("ERROR: corrected experiments preserve accumulation_steps=1.")
             if sha256_file(Path(args.splits_json)) != experiment_definition["dataset"]["split_sha256"]:
                 raise SystemExit("ERROR: split file checksum conflicts with the immutable experiment definition.")
             if model_name not in experiment_definition["configuration"]["models"]:
@@ -863,6 +998,7 @@ def run_training(
                 "normalization_mode": args.normalization_mode,
                 "memory_mode": args.experiment_memory_mode,
                 "cache_root": args.experiment_cache_root,
+                "cache_read_only": diagnostic_requested,
                 "source_sha256": {
                     entry["subject_id"]: entry["sha256"]
                     for entry in experiment_definition["dataset"]["source_inventory"]
@@ -909,6 +1045,9 @@ def run_training(
                 "fold_definition_id": experiment_definition["dataset"]["fold_definition_id"],
                 "global_seed": int(experiment_definition["seeds"]["global_seed"]),
                 "training_run_seed": int(args.seed),
+                **{key: experiment_definition["configuration"][key]
+                   for key in ("checkpoint_selection", "numerical_policy")
+                   if key in experiment_definition["configuration"]},
             }
         patch_size = tuple(args.patch_size)
         if patch_size_validator is not None:
@@ -945,24 +1084,12 @@ def run_training(
                 from reproducibility.experiment import fold_definition
 
                 fold_payload = fold_definition(experiment_definition, int(args.experiment_fold))
-                train_by_id = {sample.subject: sample for sample in train_samples}
-                dev_by_id = {sample.subject: sample for sample in dev_samples}
-                train_duplicate_ids = list(fold_payload["duplicated_subjects"]["train_ids"])
-                dev_duplicate_ids = list(fold_payload["duplicated_subjects"]["val_ids"])
-                if not set(train_duplicate_ids).issubset(train_by_id) or not set(dev_duplicate_ids).issubset(dev_by_id):
-                    raise SystemExit("ERROR: stored duplicate-subject selection conflicts with the resolved split.")
-                aug_copies = [
-                    Sample(subject, train_by_id[subject].t1w_path, train_by_id[subject].mask_path, augment=True)
-                    for subject in train_duplicate_ids
-                ]
-                dev_aug_copies = [
-                    Sample(subject, dev_by_id[subject].t1w_path, dev_by_id[subject].mask_path, augment=True)
-                    for subject in dev_duplicate_ids
-                ]
-                n_aug = len(aug_copies)
-                n_dev_aug = len(dev_aug_copies)
-                train_samples = train_samples + aug_copies
-                dev_samples = dev_samples + dev_aug_copies
+                if sorted(fold_payload["train_ids"]) != sorted(train_ids) or sorted(fold_payload["val_ids"]) != sorted(dev_ids):
+                    raise RuntimeError("Immutable fold subjects conflict with the resolved split")
+                train_samples, dev_samples = corrected_training_samples(
+                    samples, fold_payload, args.experiment_training_regime
+                )
+                n_aug = sum(sample.augment for sample in train_samples)
             else:
                 try:
                     from torchio_augmentations import get_torchio_augmentation
@@ -982,7 +1109,19 @@ def run_training(
                 dev_aug_copies = [Sample(s.subject, s.t1w_path, s.mask_path, augment=True) for s in dev_aug_subjects]
                 dev_samples = dev_samples + dev_aug_copies
 
-        run_dir = Path(args.run_dir)
+        source_run_dir = Path(args.run_dir)
+        run_dir = source_run_dir
+        if diagnostic_requested:
+            diagnostic_path = Path(diagnostic_output_value).resolve()
+            if diagnostic_path.is_relative_to(source_run_dir.resolve()):
+                raise RuntimeError("Diagnostic output must be outside the source task directory")
+            if args.experiment_cache_root and diagnostic_path.is_relative_to(Path(args.experiment_cache_root).resolve()):
+                raise RuntimeError("Diagnostic output must be outside the source cache directory")
+            run_dir = diagnostic_path.with_suffix(".artifacts")
+            if run_dir.exists() or diagnostic_path.exists():
+                raise RuntimeError(f"Refusing to overwrite diagnostic output: {diagnostic_path}, {run_dir}")
+            if distributed:
+                dist.barrier()
         (run_dir / "checkpoints").mkdir(parents=True, exist_ok=True)
         (run_dir / "logs").mkdir(parents=True, exist_ok=True)
         (run_dir / "config").mkdir(parents=True, exist_ok=True)
@@ -1000,7 +1139,12 @@ def run_training(
             augmentation=augmentation,
             experiment_context=experiment_context,
         )
-        dev_ds = VolumeDataset(dev_samples, augmentation=augmentation, experiment_context=experiment_context)
+        if corrected_enabled:
+            if sorted(sample.subject for sample in dev_samples) != sorted(dev_ids) or any(s.augment for s in dev_samples):
+                raise RuntimeError("Checkpoint selection must use exactly the original clean validation IDs")
+        dev_ds = VolumeDataset(
+            dev_samples, augmentation=None if corrected_enabled else augmentation, experiment_context=experiment_context
+        )
 
         if not distributed or dist.get_rank() == 0:
             print(f"Device: {device}")
@@ -1040,7 +1184,7 @@ def run_training(
         repo_root = Path(__file__).resolve().parents[1]
         git_commit = get_git_commit(repo_root)
         ddp_find_unused_parameters = model_name == "mednext"
-        config_path = run_dir / "config" / "train_config.json"
+        config_path = (source_run_dir if diagnostic_requested else run_dir) / "config" / "train_config.json"
         recorded_args = dict(vars(args))
         if not corrected_enabled:
             for key in (
@@ -1087,6 +1231,9 @@ def run_training(
             }
             immutable_training_request["experiment_id"] = experiment_definition["experiment_id"]
             immutable_training_request["split_sha256"] = experiment_definition["dataset"]["split_sha256"]
+            if not diagnostic_requested:
+                immutable_training_request.update({key: experiment_definition["configuration"][key]
+                                                   for key in ("checkpoint_selection", "numerical_policy")})
             config_payload["immutable_training_request"] = immutable_training_request
             if not distributed or dist.get_rank() == 0:
                 if config_path.exists():
@@ -1095,6 +1242,8 @@ def run_training(
                         raise RuntimeError(
                             f"Corrected training configuration conflicts with existing {config_path}; use a new experiment ID."
                         )
+                elif diagnostic_requested:
+                    raise RuntimeError(f"Diagnostic replay requires existing configuration: {config_path}")
                 else:
                     config_path.write_text(json.dumps(config_payload, indent=2))
             if distributed:
@@ -1151,6 +1300,20 @@ def run_training(
         if args.numerics_debug and args.numerics_debug_hooks and model_name == "mednext":
             activation_monitor = ActivationMonitor(unwrap_model(model), enabled=True)
 
+        from reproducibility.numerics import TrainingNumerics
+
+        numerics = TrainingNumerics(
+            model, device=device, run_dir=run_dir, amp_enabled=use_amp,
+            diagnostics=(lambda: {
+                "activations": activation_monitor.snapshot(top_k=numerics_topk) if activation_monitor else None,
+                "gradients": collect_gradient_diagnostics(model, top_k=numerics_topk),
+            }) if args.numerics_debug else None,
+            task={"model": model_name, "regime": args.experiment_training_regime,
+                  "fold": args.experiment_fold, "experiment_id": experiment_definition["experiment_id"]},
+        ) if corrected_enabled else None
+        if numerics is not None:
+            numerics.check_model_state()
+
         best_dice = -1.0
         epochs_without_improvement = 0
         global_step = 0
@@ -1160,7 +1323,9 @@ def run_training(
         if not log_path.exists() and (not distributed or dist.get_rank() == 0):
             log_path.write_text("epoch,train_loss,dev_dice,dev_loss\n")
 
-        last_checkpoint_path = run_dir / "checkpoints" / "last.pt"
+        last_checkpoint_path = source_run_dir / "checkpoints" / "last.pt"
+        resume_checkpoint_epoch = None
+        resume_checkpoint_global_step = None
         if corrected_enabled and args.corrected_resume:
             if not last_checkpoint_path.exists():
                 raise RuntimeError(f"Corrected resume requested but operational checkpoint is missing: {last_checkpoint_path}")
@@ -1180,10 +1345,14 @@ def run_training(
             unwrap_model(model).load_state_dict(resume_state["model"])
             optimizer.load_state_dict(resume_state["optimizer"])
             scaler.load_state_dict(resume_state["scaler"])
+            numerics.fallback_count = int(resume_state.get("fallback_count", 0))
+            numerics.check_model_state()
             best_dice = float(resume_state["best_dice"])
             epochs_without_improvement = int(resume_state["epochs_without_improvement"])
             global_step = int(resume_state["global_step"])
             start_epoch = int(resume_state["epoch"]) + 1
+            resume_checkpoint_epoch = int(resume_state["epoch"])
+            resume_checkpoint_global_step = int(resume_state["global_step"])
             rank = dist.get_rank() if distributed else 0
             rng_states = resume_state.get("rng_states_by_rank", [])
             if rank >= len(rng_states):
@@ -1192,9 +1361,49 @@ def run_training(
             if main_process:
                 print(f"Resuming corrected training at epoch {start_epoch} from {last_checkpoint_path}")
 
+        diagnostic_output = Path(diagnostic_output_value) if diagnostic_output_value is not None else None
+        if diagnostic_requested:
+            if not corrected_enabled or not args.corrected_resume:
+                raise RuntimeError("Diagnostic replay requires a corrected operational checkpoint resume")
+            if model_name != "base_cnn":
+                raise RuntimeError("The targeted diagnostic replay currently supports only base_cnn")
+            if int(args.accum_steps) != 1:
+                raise RuntimeError("Exact diagnostic replay requires accumulation_steps=1")
+            if int(args.batch_size) != 1:
+                raise RuntimeError("Exact diagnostic index mapping requires corrected batch_size=1")
+            expected_world_size = int(experiment_definition["configuration"]["nproc_per_node"])
+            actual_world_size = dist.get_world_size() if distributed else 1
+            if actual_world_size != expected_world_size:
+                raise RuntimeError(
+                    f"Diagnostic replay requires world_size={expected_world_size}, got {actual_world_size}"
+                )
+            if int(diagnostic_epoch) != start_epoch:
+                raise RuntimeError(
+                    f"Diagnostic epoch must be the first epoch after last.pt: expected {start_epoch}, "
+                    f"got {diagnostic_epoch}"
+                )
+            if int(diagnostic_epoch) > args.max_epochs:
+                raise RuntimeError("Diagnostic epoch exceeds the recorded training schedule")
+            if not 1 <= int(diagnostic_step) <= len(train_loader):
+                raise RuntimeError(
+                    f"Diagnostic step must be within [1, {len(train_loader)}], got {diagnostic_step}"
+                )
+            if verify_fix and int(diagnostic_step) >= len(train_loader):
+                raise RuntimeError("Fix verification needs one subsequent batch to verify DDP can continue")
+            assert diagnostic_output is not None
+            if diagnostic_output.exists():
+                raise RuntimeError(f"Refusing to overwrite diagnostic output: {diagnostic_output}")
+            if main_process:
+                diagnostic_output.parent.mkdir(parents=True, exist_ok=True)
+            if distributed:
+                dist.barrier()
+
+        target_verification = None
+        replay_initial_fallback_count = numerics.fallback_count if numerics is not None else 0
         for epoch in range(start_epoch, args.max_epochs + 1):
             if train_sampler is not None:
                 train_sampler.set_epoch(epoch)
+            epoch_indices = list(train_sampler) if corrected_enabled else []
             train_ds.set_epoch(epoch)
             dev_ds.set_epoch(epoch)
 
@@ -1209,108 +1418,222 @@ def run_training(
                 assert_patch_batch(x, y, patch_size)
                 x = x.to(device)
                 y = y.to(device)
+
+                if diagnostic_requested and not verify_fix and epoch == int(diagnostic_epoch) and step == int(diagnostic_step):
+                    from reproducibility.core import software_provenance, write_json_new
+                    from reproducibility.numerics import (
+                        classify_failure,
+                        model_state_statistics,
+                        run_forward_precision_probes,
+                        tensor_statistics,
+                    )
+
+                    rank = dist.get_rank() if distributed else 0
+                    sampler_indices = list(train_sampler)
+                    dataset_index = int(sampler_indices[step - 1])
+                    input_stats = tensor_statistics(x)
+                    target_stats = tensor_statistics(y)
+                    state_stats = model_state_statistics(unwrap_model(model), top_k=numerics_topk)
+                    probes = run_forward_precision_probes(
+                        unwrap_model(model),
+                        x,
+                        amp_enabled=use_amp,
+                        top_k=numerics_topk,
+                    )
+                    local_diagnostic = {
+                        "rank": rank,
+                        "batch": train_ds.describe_index(dataset_index),
+                        "input": input_stats,
+                        "target": target_stats,
+                        "model_state_before_forward": state_stats,
+                        "precision_probes": probes,
+                        "classification": classify_failure(input_stats, state_stats, probes),
+                    }
+                    if distributed:
+                        rank_diagnostics: list[dict[str, Any] | None] = [None] * dist.get_world_size()
+                        dist.all_gather_object(rank_diagnostics, local_diagnostic)
+                    else:
+                        rank_diagnostics = [local_diagnostic]
+                    write_error = None
+                    if main_process:
+                        assert diagnostic_output is not None
+                        try:
+                            write_json_new(
+                                diagnostic_output,
+                                {
+                                    "diagnostic_type": "corrected_training_exact_step_replay_v1",
+                                    "model": model_name,
+                                    "run_dir": str(run_dir),
+                                    "resume_checkpoint": str(last_checkpoint_path),
+                                    "resume_checkpoint_epoch": resume_checkpoint_epoch,
+                                    "resume_checkpoint_global_step": resume_checkpoint_global_step,
+                                    "target_epoch": epoch,
+                                    "target_step": step,
+                                    "target_global_step": global_step,
+                                    "optimizer_updates_replayed": step - 1,
+                                    "amp_enabled": use_amp,
+                                    "world_size": len(rank_diagnostics),
+                                    "ranks": rank_diagnostics,
+                                    "software_environment": software_provenance(repo_root),
+                                },
+                            )
+                            print(f"Wrote exact-step numerics diagnostic to {diagnostic_output}", flush=True)
+                        except Exception as exc:
+                            write_error = f"{type(exc).__name__}: {exc}"
+                    if distributed:
+                        write_status = [write_error]
+                        dist.broadcast_object_list(write_status, src=0)
+                        write_error = write_status[0]
+                    if write_error is not None:
+                        raise RuntimeError(f"Could not write exact-step numerics diagnostic: {write_error}")
+                    return 0
+
                 activation_snapshot = None
                 if activation_monitor is not None:
                     activation_monitor.clear_step()
 
-                with autocast_context(enabled=use_amp):
-                    logits = model(x)
-                    if isinstance(logits, (list, tuple)):
-                        raise AssertionError("Unexpected deep supervision outputs in shared training loop")
+                if numerics is not None:
+                    scale_state_before = scaler.state_dict() if verify_fix and step == int(diagnostic_step) else None
+                    logits, used_fallback = numerics.forward(
+                        x, context={"epoch": epoch, "step": step, "global_step": global_step},
+                        batch=train_ds.batch_identity(epoch_indices[step - 1]),
+                        scaler_scale=float(scaler.get_scale()) if use_amp else None,
+                    )
                     assert_logits_shape(logits, x)
-                max_abs_logit = float(logits.detach().abs().amax().item())
-                if activation_monitor is not None:
-                    activation_snapshot = activation_monitor.snapshot(top_k=numerics_topk)
-                if not bool(torch.isfinite(logits).all().item()):
-                    diag_path = write_numerics_abort(
-                        run_dir,
-                        epoch=epoch,
-                        step=step,
-                        global_step=global_step,
-                        reason="non_finite_logits",
-                        loss=None,
-                        max_abs_logit=max_abs_logit,
-                        grad_norm=last_grad_norm,
-                        scaler_scale=float(scaler.get_scale()) if use_amp else None,
-                        lr=float(optimizer.param_groups[0]["lr"]),
-                        debug={"activations": activation_snapshot} if activation_snapshot is not None else None,
+                    max_abs_logit = float(logits.detach().abs().amax().item())
+                    loss = loss_fn(logits.float(), y.float())
+                    last_grad_norm = numerics.backward_step(
+                        loss, fallback=used_fallback, optimizer=optimizer, scaler=scaler,
+                        max_consecutive_overflows=MAX_CONSECUTIVE_AMP_OVERFLOWS,
+                        overflow_probe=(lambda: run_fp32_probe(
+                            model, loss_fn, x, y, accum_steps=1, top_k=numerics_topk, collective_safe=True
+                        )) if args.numerics_debug and args.numerics_debug_fp32_probe else None,
                     )
-                    raise RuntimeError(
-                        f"Non-finite logits detected at epoch={epoch}, step={step}, "
-                        f"global_step={global_step}. Diagnostic saved to {diag_path}"
-                    )
-
-                loss = loss_fn(logits.float(), y.float())
-                loss = loss / args.accum_steps
-                if not bool(torch.isfinite(loss).item()):
-                    diag_path = write_numerics_abort(
-                        run_dir,
-                        epoch=epoch,
-                        step=step,
-                        global_step=global_step,
-                        reason="non_finite_loss",
-                        loss=float(loss.detach().item()),
-                        max_abs_logit=max_abs_logit,
-                        grad_norm=last_grad_norm,
-                        scaler_scale=float(scaler.get_scale()) if use_amp else None,
-                        lr=float(optimizer.param_groups[0]["lr"]),
-                        debug={"activations": activation_snapshot} if activation_snapshot is not None else None,
-                    )
-                    raise RuntimeError(
-                        f"Non-finite loss detected at epoch={epoch}, step={step}, "
-                        f"global_step={global_step}. Diagnostic saved to {diag_path}"
-                    )
-
-                if use_amp:
-                    scaler.scale(loss).backward()
+                    consecutive_amp_overflows = numerics.consecutive_overflows
                 else:
-                    loss.backward()
+                    with autocast_context(enabled=use_amp):
+                        logits = model(x)
+                        if isinstance(logits, (list, tuple)):
+                            raise AssertionError("Unexpected deep supervision outputs in shared training loop")
+                        assert_logits_shape(logits, x)
+                    max_abs_logit = float(logits.detach().abs().amax().item())
+                    if activation_monitor is not None:
+                        activation_snapshot = activation_monitor.snapshot(top_k=numerics_topk)
+                    if not bool(torch.isfinite(logits).all().item()):
+                        diag_path = write_numerics_abort(
+                            run_dir,
+                            epoch=epoch,
+                            step=step,
+                            global_step=global_step,
+                            reason="non_finite_logits",
+                            loss=None,
+                            max_abs_logit=max_abs_logit,
+                            grad_norm=last_grad_norm,
+                            scaler_scale=float(scaler.get_scale()) if use_amp else None,
+                            lr=float(optimizer.param_groups[0]["lr"]),
+                            debug={"activations": activation_snapshot} if activation_snapshot is not None else None,
+                        )
+                        raise RuntimeError(
+                            f"Non-finite logits detected at epoch={epoch}, step={step}, "
+                            f"global_step={global_step}. Diagnostic saved to {diag_path}"
+                        )
 
-                if step % args.accum_steps == 0:
+                    loss = loss_fn(logits.float(), y.float())
+                    loss = loss / args.accum_steps
+                    if not bool(torch.isfinite(loss).item()):
+                        diag_path = write_numerics_abort(
+                            run_dir,
+                            epoch=epoch,
+                            step=step,
+                            global_step=global_step,
+                            reason="non_finite_loss",
+                            loss=float(loss.detach().item()),
+                            max_abs_logit=max_abs_logit,
+                            grad_norm=last_grad_norm,
+                            scaler_scale=float(scaler.get_scale()) if use_amp else None,
+                            lr=float(optimizer.param_groups[0]["lr"]),
+                            debug={"activations": activation_snapshot} if activation_snapshot is not None else None,
+                        )
+                        raise RuntimeError(
+                            f"Non-finite loss detected at epoch={epoch}, step={step}, "
+                            f"global_step={global_step}. Diagnostic saved to {diag_path}"
+                        )
+
                     if use_amp:
-                        scaler.unscale_(optimizer)
-                    grad_diagnostics = (
-                        collect_gradient_diagnostics(model, top_k=numerics_topk) if args.numerics_debug else None
-                    )
-                    grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 12.0)
-                    grad_norm_value = float(grad_norm.detach().item()) if torch.is_tensor(grad_norm) else float(grad_norm)
-                    skip_optimizer_step = False
-                    if not np.isfinite(grad_norm_value):
-                        fp32_probe = None
-                        amp_overflow_debug = None
+                        scaler.scale(loss).backward()
+                    else:
+                        loss.backward()
+
+                    if step % args.accum_steps == 0:
                         if use_amp:
-                            scale_before = float(scaler.get_scale())
-                            scaler.step(optimizer)
-                            scaler.update()
-                            scale_after = float(scaler.get_scale())
-                            optimizer.zero_grad(set_to_none=True)
-                            amp_overflow_recovered = scale_after < scale_before
-                            amp_overflow_debug = {
-                                "scale_before": scale_before,
-                                "scale_after": scale_after,
-                                "overflow_recovered_by_scaler": amp_overflow_recovered,
-                                "consecutive_overflows_before_step": consecutive_amp_overflows,
-                            }
-                            if args.numerics_debug and args.numerics_debug_fp32_probe:
-                                fp32_probe = run_fp32_probe(
-                                    model,
-                                    loss_fn,
-                                    x,
-                                    y,
-                                    accum_steps=args.accum_steps,
-                                    top_k=numerics_topk,
-                                )
-                            if amp_overflow_recovered:
-                                consecutive_amp_overflows += 1
-                                amp_overflow_debug["consecutive_overflows_after_step"] = consecutive_amp_overflows
-                                skip_optimizer_step = True
-                                last_grad_norm = None
-                                if main_process and args.numerics_debug:
-                                    print(
-                                        f"AMP overflow recovered at epoch={epoch}, step={step}, "
-                                        f"global_step={global_step}, scale {scale_before} -> {scale_after}"
+                            scaler.unscale_(optimizer)
+                        grad_diagnostics = (
+                            collect_gradient_diagnostics(model, top_k=numerics_topk) if args.numerics_debug else None
+                        )
+                        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 12.0)
+                        grad_norm_value = float(grad_norm.detach().item()) if torch.is_tensor(grad_norm) else float(grad_norm)
+                        skip_optimizer_step = False
+                        if not np.isfinite(grad_norm_value):
+                            fp32_probe = None
+                            amp_overflow_debug = None
+                            if use_amp:
+                                scale_before = float(scaler.get_scale())
+                                scaler.step(optimizer)
+                                scaler.update()
+                                scale_after = float(scaler.get_scale())
+                                optimizer.zero_grad(set_to_none=True)
+                                amp_overflow_recovered = scale_after < scale_before
+                                amp_overflow_debug = {
+                                    "scale_before": scale_before,
+                                    "scale_after": scale_after,
+                                    "overflow_recovered_by_scaler": amp_overflow_recovered,
+                                    "consecutive_overflows_before_step": consecutive_amp_overflows,
+                                }
+                                if args.numerics_debug and args.numerics_debug_fp32_probe:
+                                    fp32_probe = run_fp32_probe(
+                                        model,
+                                        loss_fn,
+                                        x,
+                                        y,
+                                        accum_steps=args.accum_steps,
+                                        top_k=numerics_topk,
                                     )
-                                if consecutive_amp_overflows > MAX_CONSECUTIVE_AMP_OVERFLOWS:
+                                if amp_overflow_recovered:
+                                    consecutive_amp_overflows += 1
+                                    amp_overflow_debug["consecutive_overflows_after_step"] = consecutive_amp_overflows
+                                    skip_optimizer_step = True
+                                    last_grad_norm = None
+                                    if main_process and args.numerics_debug:
+                                        print(
+                                            f"AMP overflow recovered at epoch={epoch}, step={step}, "
+                                            f"global_step={global_step}, scale {scale_before} -> {scale_after}"
+                                        )
+                                    if consecutive_amp_overflows > MAX_CONSECUTIVE_AMP_OVERFLOWS:
+                                        debug_payload = {
+                                            "activations": activation_snapshot,
+                                            "gradients_after_unscale": grad_diagnostics,
+                                            "amp_overflow": amp_overflow_debug,
+                                        }
+                                        if fp32_probe is not None:
+                                            debug_payload["fp32_probe"] = fp32_probe
+                                        diag_path = write_numerics_abort(
+                                            run_dir,
+                                            epoch=epoch,
+                                            step=step,
+                                            global_step=global_step,
+                                            reason="persistent_amp_overflow",
+                                            loss=float(loss.detach().item()),
+                                            max_abs_logit=max_abs_logit,
+                                            grad_norm=grad_norm_value,
+                                            scaler_scale=scale_after,
+                                            lr=float(optimizer.param_groups[0]["lr"]),
+                                            debug=debug_payload,
+                                        )
+                                        raise RuntimeError(
+                                            f"Persistent AMP overflow detected at epoch={epoch}, step={step}, "
+                                            f"global_step={global_step}. Diagnostic saved to {diag_path}"
+                                        )
+                                else:
                                     debug_payload = {
                                         "activations": activation_snapshot,
                                         "gradients_after_unscale": grad_diagnostics,
@@ -1323,7 +1646,7 @@ def run_training(
                                         epoch=epoch,
                                         step=step,
                                         global_step=global_step,
-                                        reason="persistent_amp_overflow",
+                                        reason="non_finite_grad_norm",
                                         loss=float(loss.detach().item()),
                                         max_abs_logit=max_abs_logit,
                                         grad_norm=grad_norm_value,
@@ -1332,17 +1655,14 @@ def run_training(
                                         debug=debug_payload,
                                     )
                                     raise RuntimeError(
-                                        f"Persistent AMP overflow detected at epoch={epoch}, step={step}, "
+                                        f"Non-finite gradient norm detected at epoch={epoch}, step={step}, "
                                         f"global_step={global_step}. Diagnostic saved to {diag_path}"
                                     )
                             else:
                                 debug_payload = {
                                     "activations": activation_snapshot,
                                     "gradients_after_unscale": grad_diagnostics,
-                                    "amp_overflow": amp_overflow_debug,
                                 }
-                                if fp32_probe is not None:
-                                    debug_payload["fp32_probe"] = fp32_probe
                                 diag_path = write_numerics_abort(
                                     run_dir,
                                     epoch=epoch,
@@ -1352,7 +1672,7 @@ def run_training(
                                     loss=float(loss.detach().item()),
                                     max_abs_logit=max_abs_logit,
                                     grad_norm=grad_norm_value,
-                                    scaler_scale=scale_after,
+                                    scaler_scale=None,
                                     lr=float(optimizer.param_groups[0]["lr"]),
                                     debug=debug_payload,
                                 )
@@ -1360,37 +1680,61 @@ def run_training(
                                     f"Non-finite gradient norm detected at epoch={epoch}, step={step}, "
                                     f"global_step={global_step}. Diagnostic saved to {diag_path}"
                                 )
-                        else:
-                            debug_payload = {
-                                "activations": activation_snapshot,
-                                "gradients_after_unscale": grad_diagnostics,
-                            }
-                            diag_path = write_numerics_abort(
-                                run_dir,
-                                epoch=epoch,
-                                step=step,
-                                global_step=global_step,
-                                reason="non_finite_grad_norm",
-                                loss=float(loss.detach().item()),
-                                max_abs_logit=max_abs_logit,
-                                grad_norm=grad_norm_value,
-                                scaler_scale=None,
-                                lr=float(optimizer.param_groups[0]["lr"]),
-                                debug=debug_payload,
-                            )
-                            raise RuntimeError(
-                                f"Non-finite gradient norm detected at epoch={epoch}, step={step}, "
-                                f"global_step={global_step}. Diagnostic saved to {diag_path}"
-                            )
-                    if not skip_optimizer_step:
-                        last_grad_norm = grad_norm_value
-                        consecutive_amp_overflows = 0
-                        if use_amp:
-                            scaler.step(optimizer)
-                            scaler.update()
-                        else:
-                            optimizer.step()
-                        optimizer.zero_grad(set_to_none=True)
+                        if not skip_optimizer_step:
+                            last_grad_norm = grad_norm_value
+                            consecutive_amp_overflows = 0
+                            if use_amp:
+                                scaler.step(optimizer)
+                                scaler.update()
+                            else:
+                                optimizer.step()
+                            optimizer.zero_grad(set_to_none=True)
+
+                if verify_fix and step == int(diagnostic_step):
+                    target_verification = {
+                        "fallback_triggered": used_fallback,
+                        "fp32_update_completed": used_fallback,
+                        "scaler_state_unchanged": scaler.state_dict() == scale_state_before,
+                        "target_global_step": global_step,
+                        "fallback_event": numerics.last_event if used_fallback else None,
+                        "earlier_replay_fallbacks": numerics.fallback_count - replay_initial_fallback_count - int(used_fallback),
+                    }
+                if verify_fix and step == int(diagnostic_step) + 1:
+                    from reproducibility.core import software_provenance
+
+                    passed = (target_verification["fallback_triggered"]
+                              and target_verification["scaler_state_unchanged"]
+                              and target_verification["earlier_replay_fallbacks"] == 0
+                              and last_grad_norm is not None)
+                    report = {
+                        "diagnostic_type": "production_amp_fp32_fix_verification_v1",
+                        "status": "passed" if passed else "inconclusive_failure_not_reproduced_exactly",
+                        "source_run_dir": str(source_run_dir),
+                        "source_checkpoint": str(last_checkpoint_path),
+                        "source_checkpoint_epoch": resume_checkpoint_epoch,
+                        "source_checkpoint_global_step": resume_checkpoint_global_step,
+                        "epoch": epoch, "step": int(diagnostic_step),
+                        "subsequent_update_completed": last_grad_norm is not None,
+                        "fallback_count": numerics.fallback_count,
+                        "software_environment": software_provenance(repo_root),
+                        **target_verification,
+                    }
+                    # Reuse the controller's collective-safe writer, outside the
+                    # source task. Source config/checkpoints/cache stay read-only.
+                    numerics._write("fix_verification.json", report)
+                    numerics.save_summary(completed=True)
+                    from reproducibility.numerics import collective_all
+                    write_ok = True
+                    if main_process:
+                        try:
+                            from reproducibility.core import write_json_new
+                            write_json_new(diagnostic_output, report)
+                            print(f"Fix verification: {report['status']}; {diagnostic_output}", flush=True)
+                        except Exception:
+                            write_ok = False
+                    if not collective_all(write_ok, device):
+                        raise RuntimeError("Could not write fix verification report")
+                    return 0 if passed else 2
 
                 running += loss.item() * args.accum_steps
                 postfix = {
@@ -1408,92 +1752,103 @@ def run_training(
             dev_dice = 0.0
             dev_loss = 0.0
             should_stop = False
+            validation_error = None
             if epoch % args.val_interval == 0 and (not distributed or dist.get_rank() == 0):
-                ckpt_path = run_dir / "checkpoints" / "best.pt"
-                model_training_flag_at_val_entry = bool(model.training)
-                model.eval()
-                model_training_flag_after_eval = bool(model.training)
-                case_rows = []
-                subject_ids = []
-                with torch.no_grad():
-                    scores = []
-                    val_losses = []
-                    predictor = unwrap_model(model)
-                    best_checkpoint_before_val = get_path_metadata(ckpt_path)
-                    for x, y, _sid in tqdm(dev_loader, desc="Valid", leave=False):
-                        if x.ndim != 5 or y.ndim != 5:
-                            raise AssertionError(
-                                f"Expected validation tensors [B, C, D, H, W], got x={tuple(x.shape)} y={tuple(y.shape)}"
+                try:
+                    ckpt_path = run_dir / "checkpoints" / "best.pt"
+                    model_training_flag_at_val_entry = bool(model.training)
+                    model.eval()
+                    model_training_flag_after_eval = bool(model.training)
+                    case_rows = []
+                    subject_ids = []
+                    with torch.no_grad():
+                        scores = []
+                        val_losses = []
+                        predictor = unwrap_model(model)
+                        best_checkpoint_before_val = get_path_metadata(ckpt_path)
+                        for x, y, _sid in tqdm(dev_loader, desc="Valid", leave=False):
+                            if x.ndim != 5 or y.ndim != 5:
+                                raise AssertionError(
+                                    f"Expected validation tensors [B, C, D, H, W], got x={tuple(x.shape)} y={tuple(y.shape)}"
+                                )
+                            sid = _sid[0] if isinstance(_sid, (list, tuple)) else str(_sid)
+                            x = x.to(device)
+                            y = y.to(device)
+                            logits = sliding_window_inference(
+                                x,
+                                roi_size=patch_size,
+                                sw_batch_size=1,
+                                predictor=predictor,
                             )
-                        sid = _sid[0] if isinstance(_sid, (list, tuple)) else str(_sid)
-                        x = x.to(device)
-                        y = y.to(device)
-                        logits = sliding_window_inference(
-                            x,
-                            roi_size=patch_size,
-                            sw_batch_size=1,
-                            predictor=predictor,
-                        )
-                        assert_logits_shape(logits, x)
-                        if not bool(torch.isfinite(logits).all().item()):
-                            raise RuntimeError(
-                                f"Non-finite validation logits at epoch={epoch} for subject={sid}"
+                            assert_logits_shape(logits, x)
+                            if not bool(torch.isfinite(logits).all().item()):
+                                raise RuntimeError(
+                                    f"Non-finite validation logits at epoch={epoch} for subject={sid}"
+                                )
+                            val_losses.append(float(loss_fn(logits.float(), y.float()).item()))
+                            probs = torch.sigmoid(logits)
+                            preds = (probs > 0.5).float()
+                            case_dice = dice_score(preds, y)
+                            scores.append(case_dice)
+                            subject_ids.append(sid)
+                            case_rows.append(
+                                {
+                                    "subject_id": sid,
+                                    "gt_voxels": int(y.sum().item()),
+                                    "pred_voxels": int(preds.sum().item()),
+                                    "dice": case_dice,
+                                }
                             )
-                        val_losses.append(float(loss_fn(logits.float(), y.float()).item()))
-                        probs = torch.sigmoid(logits)
-                        preds = (probs > 0.5).float()
-                        case_dice = dice_score(preds, y)
-                        scores.append(case_dice)
-                        subject_ids.append(sid)
-                        case_rows.append(
-                            {
-                                "subject_id": sid,
-                                "gt_voxels": int(y.sum().item()),
-                                "pred_voxels": int(preds.sum().item()),
-                                "dice": case_dice,
-                            }
-                        )
-                    dev_dice = float(np.mean(scores)) if scores else 0.0
-                    dev_loss = float(np.mean(val_losses)) if val_losses else 0.0
+                        dev_dice = float(np.mean(scores)) if scores else 0.0
+                        dev_loss = float(np.mean(val_losses)) if val_losses else 0.0
 
-                csv_path, meta_path = write_validation_artifacts(
-                    run_dir,
-                    epoch,
-                    case_rows,
-                    model_training_flag_at_val_entry=model_training_flag_at_val_entry,
-                    model_training_flag_after_eval=model_training_flag_after_eval,
-                    num_val_batches=len(dev_loader),
-                    subject_ids=subject_ids,
-                    validation_checkpoint=None,
-                    best_checkpoint_before_val=best_checkpoint_before_val,
-                )
-                print(
-                    f"Validation epoch {epoch}: model.training before eval={model_training_flag_at_val_entry}, "
-                    f"after eval={model_training_flag_after_eval}, val_batches={len(dev_loader)}, "
-                    f"subject_hash={hashlib.sha256(chr(10).join(subject_ids).encode('utf-8')).hexdigest()}, "
-                    f"cases_csv={csv_path}, meta_json={meta_path}"
-                )
-                if dev_dice > best_dice:
-                    best_dice = dev_dice
-                    epochs_without_improvement = 0
-                    best_payload = {
-                        "model": unwrap_model(model).state_dict(),
-                        "epoch": epoch,
-                        "best_dice": best_dice,
-                    }
-                    if corrected_enabled:
-                        best_payload["corrected_experiment_metadata"] = corrected_checkpoint_metadata
-                    torch.save(best_payload, ckpt_path)
-                else:
-                    epochs_without_improvement += 1
+                    csv_path, meta_path = write_validation_artifacts(
+                        run_dir,
+                        epoch,
+                        case_rows,
+                        model_training_flag_at_val_entry=model_training_flag_at_val_entry,
+                        model_training_flag_after_eval=model_training_flag_after_eval,
+                        num_val_batches=len(dev_loader),
+                        subject_ids=subject_ids,
+                        validation_checkpoint=None,
+                        best_checkpoint_before_val=best_checkpoint_before_val,
+                    )
+                    print(
+                        f"Validation epoch {epoch}: model.training before eval={model_training_flag_at_val_entry}, "
+                        f"after eval={model_training_flag_after_eval}, val_batches={len(dev_loader)}, "
+                        f"subject_hash={hashlib.sha256(chr(10).join(subject_ids).encode('utf-8')).hexdigest()}, "
+                        f"cases_csv={csv_path}, meta_json={meta_path}"
+                    )
+                    if dev_dice > best_dice:
+                        best_dice = dev_dice
+                        epochs_without_improvement = 0
+                        best_payload = {
+                            "model": unwrap_model(model).state_dict(),
+                            "epoch": epoch,
+                            "best_dice": best_dice,
+                        }
+                        if corrected_enabled:
+                            best_payload["corrected_experiment_metadata"] = corrected_checkpoint_metadata
+                        torch.save(best_payload, ckpt_path)
+                    else:
+                        epochs_without_improvement += 1
 
-                if args.patience > 0 and epochs_without_improvement >= args.patience:
-                    if main_process:
-                        print(
-                            f"Early stopping at epoch {epoch}: no improvement in dev Dice "
-                            f"for {args.patience} validation epochs (best={best_dice:.4f})"
-                        )
-                    should_stop = True
+                    if args.patience > 0 and epochs_without_improvement >= args.patience:
+                        if main_process:
+                            print(
+                                f"Early stopping at epoch {epoch}: no improvement in dev Dice "
+                                f"for {args.patience} validation epochs (best={best_dice:.4f})"
+                            )
+                        should_stop = True
+
+                except Exception as exc:
+                    if not corrected_enabled:
+                        raise
+                    validation_error = f"{type(exc).__name__}: {exc}"
+            if corrected_enabled:
+                from reproducibility.numerics import collective_all
+                if not collective_all(validation_error is None, device):
+                    numerics.fail("validation_failed", {"error": validation_error})
 
             if distributed:
                 stop_tensor = torch.tensor([int(should_stop)], device=device)
@@ -1518,6 +1873,7 @@ def run_training(
                             "model": unwrap_model(model).state_dict(),
                             "optimizer": optimizer.state_dict(),
                             "scaler": scaler.state_dict(),
+                            "fallback_count": numerics.fallback_count,
                             "epoch": epoch,
                             "best_dice": best_dice,
                             "epochs_without_improvement": epochs_without_improvement,
@@ -1533,6 +1889,8 @@ def run_training(
             if should_stop:
                 break
 
+        if numerics is not None:
+            numerics.save_summary(completed=True)
         return 0
     finally:
         if activation_monitor is not None:

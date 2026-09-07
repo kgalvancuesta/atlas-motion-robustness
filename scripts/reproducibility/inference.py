@@ -69,6 +69,8 @@ def checkpoint_expected_metadata(definition: dict[str, Any], *, model: str, regi
         "preprocessing_version": PREPROCESSING_VERSION,
         "fold_definition_id": definition["dataset"]["fold_definition_id"],
         "global_seed": int(definition["seeds"]["global_seed"]),
+        **{key: definition["configuration"][key] for key in ("checkpoint_selection", "numerical_policy")
+           if key in definition["configuration"]},
     }
 
 

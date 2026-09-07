@@ -87,6 +87,9 @@ class ExperimentDefinitionTests(unittest.TestCase):
             self.assertEqual(definition["configuration"]["batch_size_per_gpu"], 1)
             self.assertEqual(definition["configuration"]["early_stopping_patience"], 10)
             self.assertEqual(definition["configuration"]["validation_interval"], 1)
+            self.assertEqual(definition["configuration"]["checkpoint_selection"]["subjects"],
+                             "original_fold_clean_validation_only")
+            self.assertTrue(all(fold["duplicated_subjects"]["val_ids"] == [] for fold in definition["folds"]))
             self.assertEqual(len(definition["dataset"]["source_inventory"]), 5)
             self.assertEqual(len(definition["dataset"]["mrart"]["sources"]), 3)
             manifest = load_challenge(root, definition)

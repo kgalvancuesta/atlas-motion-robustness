@@ -23,12 +23,24 @@ from .core import (
     write_immutable_json,
 )
 from .rng import SEED_DERIVATION_VERSION, derive_seed
+from .numerics import NUMERICAL_POLICY
 
 DEFAULT_MODELS = ("base_cnn", "uxnet", "mednext", "swin")
 DEFAULT_REGIMES = ("standard", "augmented")
 DEFAULT_FOLDS = (0, 1, 2, 3, 4)
 ORIGINAL_EARLY_STOPPING_PATIENCE = 10
 ORIGINAL_VALIDATION_INTERVAL = 1
+CHECKPOINT_SELECTION = {
+    "subjects": "original_fold_clean_validation_only",
+    "identical_across_training_regimes": True,
+    "augmentation": False,
+    "metric": "mean_subject_binary_dice",
+    "threshold": 0.5,
+    "threshold_comparison": ">",
+    "dice_epsilon": 1e-6,
+    "best_rule": "strictly_greater_than_previous_best",
+    "early_stopping_metric": "same_clean_validation_dice",
+}
 MODEL_CONFIGURATIONS = {
     "base_cnn": {
         "entrypoint": "scripts/train_base_cnn.py",
@@ -55,6 +67,13 @@ MODEL_CONFIGURATIONS = {
         "loss": "dicece",
     },
 }
+
+
+def validate_training_protocol(definition: dict[str, Any]) -> None:
+    """Old corrected definitions require a fresh ID, never silent protocol adoption."""
+    for key, expected in (("checkpoint_selection", CHECKPOINT_SELECTION), ("numerical_policy", NUMERICAL_POLICY)):
+        if definition.get("configuration", {}).get(key) != expected:
+            raise ConflictError(f"Incompatible {key}; prepare a fresh authoritative experiment ID")
 
 
 def experiment_root(output_root: Path, experiment_id: str) -> Path:
@@ -265,6 +284,8 @@ def _request_signature(
         "max_epochs": int(epochs),
         "early_stopping_patience": ORIGINAL_EARLY_STOPPING_PATIENCE,
         "validation_interval": ORIGINAL_VALIDATION_INTERVAL,
+        "checkpoint_selection": CHECKPOINT_SELECTION,
+        "numerical_policy": NUMERICAL_POLICY,
         "corruption_replicate_count": int(replicate_count),
         "dataset_authority": dataset_authority,
     }
@@ -351,16 +372,12 @@ def prepare_experiment(
         train_duplicates, train_seed = _duplicate_ids(
             entry["train_ids"], global_seed=global_seed, fold=fold, role="train", fraction=augment_fraction
         )
-        val_duplicates, val_seed = _duplicate_ids(
-            entry["val_ids"], global_seed=global_seed, fold=fold, role="validation", fraction=augment_fraction
-        )
         definition_folds.append(
             {
                 **entry,
-                "duplicated_subjects": {"train_ids": train_duplicates, "val_ids": val_duplicates},
+                "duplicated_subjects": {"train_ids": train_duplicates, "val_ids": []},
                 "derived_seeds": {
                     "train_duplicate_selection": train_seed,
-                    "validation_duplicate_selection": val_seed,
                 },
             }
         )
@@ -412,6 +429,8 @@ def prepare_experiment(
             "max_epochs": int(epochs),
             "early_stopping_patience": ORIGINAL_EARLY_STOPPING_PATIENCE,
             "validation_interval": ORIGINAL_VALIDATION_INTERVAL,
+            "checkpoint_selection": CHECKPOINT_SELECTION,
+            "numerical_policy": NUMERICAL_POLICY,
             "batch_size_per_gpu": 1,
             "nproc_per_node": 2,
             "augment_fraction": float(augment_fraction),

@@ -31,6 +31,7 @@ from .experiment import (
     load_experiment,
     fold_definition,
     prepare_experiment,
+    validate_training_protocol,
 )
 from .inference import load_checkpoint, resolve_challenges, run_inference_task
 from .mrart import analyze_mrart, run_mrart_task
@@ -131,6 +132,8 @@ def _training_expected(definition: dict[str, Any], *, model: str, regime: str, f
         "validation_interval": int(definition["configuration"]["validation_interval"]),
         "batch_size_per_gpu": 1,
         "nproc_per_node": int(definition["configuration"]["nproc_per_node"]),
+        "checkpoint_selection": definition["configuration"]["checkpoint_selection"],
+        "numerical_policy": definition["configuration"]["numerical_policy"],
     }
 
 
@@ -149,6 +152,7 @@ def run_training_task(
     memory_mode: str,
     cache_root: Path | None,
 ) -> dict[str, Any]:
+    validate_training_protocol(definition)
     expected = _training_expected(definition, model=model, regime=regime, fold=fold)
     expected["nproc_per_node"] = int(nproc_per_node)
     if nproc_per_node != int(definition["configuration"]["nproc_per_node"]):
@@ -259,8 +263,13 @@ def run_training_task(
 
     device = torch.device("cpu")
     load_checkpoint(best_path, definition=definition, model=model, regime=regime, fold=fold, device=device)
+    numerical_summary = read_json(run_dir / "logs" / "numerical_summary.json")
+    if numerical_summary.get("completed") is not True:
+        raise CorrectedExperimentError(f"Training lacks a completed numerical summary: {run_dir}")
     metadata = {
         **expected,
+        "fallback_count": numerical_summary["fallback_count"],
+        "logged_fallback_events": numerical_summary["logged_fallback_events"],
         "checkpoint_path": str(best_path.relative_to(root)),
         "checkpoint_sha256": sha256_file(best_path),
         "operational_resume_checkpoint": str(last_path.relative_to(root)),
