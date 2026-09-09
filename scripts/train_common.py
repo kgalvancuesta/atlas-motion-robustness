@@ -10,7 +10,7 @@ import os
 import random
 import subprocess
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, List, Tuple
 
@@ -935,6 +935,7 @@ def run_training(
     set_seed(args.seed)
     distributed, local_rank = setup_distributed()
     activation_monitor: ActivationMonitor | None = None
+    validation_control_group = None
 
     try:
         diagnostic_epoch = getattr(args, "diagnostic_replay_epoch", None)
@@ -956,6 +957,10 @@ def run_training(
         experiment_context: dict[str, Any] | None = None
         corrected_checkpoint_metadata: dict[str, Any] | None = None
         corrected_enabled = args.experiment_definition is not None
+        if corrected_enabled and distributed:
+            # Rank 0 can validate longer than the default NCCL watchdog allows.
+            # Keep the idle ranks on a separate CPU group until it finishes.
+            validation_control_group = dist.new_group(backend="gloo", timeout=timedelta(hours=1))
         if corrected_enabled:
             from reproducibility.core import PREPROCESSING_VERSION, read_json, sha256_file, validate_metadata
             from reproducibility.experiment import fold_definition, validate_training_protocol
@@ -1845,6 +1850,10 @@ def run_training(
                     if not corrected_enabled:
                         raise
                     validation_error = f"{type(exc).__name__}: {exc}"
+            if validation_control_group is not None and epoch % args.val_interval == 0:
+                validation_status = [validation_error]
+                dist.broadcast_object_list(validation_status, src=0, group=validation_control_group)
+                validation_error = validation_status[0]
             if corrected_enabled:
                 from reproducibility.numerics import collective_all
                 if not collective_all(validation_error is None, device):
@@ -1895,4 +1904,6 @@ def run_training(
     finally:
         if activation_monitor is not None:
             activation_monitor.close()
+        if validation_control_group is not None:
+            dist.destroy_process_group(validation_control_group)
         cleanup_distributed()
