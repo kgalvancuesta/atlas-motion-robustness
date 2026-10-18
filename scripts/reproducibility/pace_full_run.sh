@@ -25,7 +25,7 @@ fi
 pace-quota
 
 DATA_ROOT="${ATLAS_DATA_ROOT:-${REPO_ROOT}/data}"
-PROJECT_OUTPUT_ROOT="${EXPERIMENT_OUTPUT_ROOT:-${HOME}/r-cpradalier7-0/reproduction_outputs/det-fix_v1.1.0}"
+PROJECT_OUTPUT_ROOT="${EXPERIMENT_OUTPUT_ROOT:?Set EXPERIMENT_OUTPUT_ROOT to a writable permanent output directory.}"
 CACHE_ROOT="${SCRATCH_RESOLVED}/det-fix_v1.1.0_cache/${EXPERIMENT_ID}"
 mkdir -p "${PROJECT_OUTPUT_ROOT}" "${CACHE_ROOT}"
 
