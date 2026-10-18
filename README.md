@@ -3,11 +3,74 @@
 This repository provides the training, inference, and evaluation pipeline used
 to compare four 3D lesion-segmentation architectures on ATLAS v2.0 (MNI space).
 
-The paper experiment used Python 3.9, 45 training epochs with early stopping,
+Release `v1.1.0` reports experiment `det-fix_v1.1.0`, with deterministic execution
+and preprocessing that better reflects clinical acquisition: simulated artifacts
+act on the full raw volume before intensity normalization and patch extraction.
+The preceding public release remains available at tag `v1.0.0`.
+
+The experiment used Python 3.9, up to 45 training epochs with early stopping,
 two-GPU distributed training, and the fixed cross-validation split committed in
 `splits/`. The augmented condition applied the `motion_consistent` preset to a
 fixed 50% of training subjects (`--augment_frac 0.5`). Exact dependency versions
 are pinned in `requirements.txt`.
+
+## Current results and reproduction
+
+The deterministic pipeline applies artifacts to the full raw volume before one
+observed-image normalization (`abs(value) > 1e-6`), then extracts training patches.
+Both training conditions select checkpoints using the same 105 clean validation
+subjects per fold. Independent derived random streams fix initialization,
+duplicate selections, patch centers, sample order, and evaluation corruptions.
+Strict deterministic CUDA settings and a collective same-batch FP32 fallback
+handle nonfinite AMP forwards without changing the sampled input.
+
+- `runs/<model>/run_{DA_}kfold_*/`: configurations, training logs, completion
+  metadata, and held-out metrics in the existing repository layout.
+- [`runs/det-fix_v1.1.0/export_provenance.json`](runs/det-fix_v1.1.0/export_provenance.json):
+  archive reference, source checksums, and export validation.
+- `runs/det-fix_v1.1.0/definition/`: release views of the experiment definition and
+  concrete shared corruption recipes.
+- `runs/det-fix_v1.1.0/case_provenance.csv`: each ATLAS case's source,
+  checkpoint, input array, recipe, metadata, and prediction checksums.
+- `scripts/supporting_experiments/statistical_inference/server_reports/det-fix_v1.1.0/`:
+  paper inference with 10,000 bootstrap draws, including gap reductions and
+  MR-ART volume/LCC contrasts. The unchanged pipeline statistics under
+  `runs/det-fix_v1.1.0/` use 2,000 draws, broader Holm families, and Wilcoxon
+  `zero_method="wilcox"`; paper inference preserves the original analysis's
+  `zero_method="pratt"`. Do not mix their intervals or adjusted p-values.
+- MR-ART now includes all four architectures: 140 complete triplets, five folds,
+  two training conditions, and 16,800 predictions. Fold predictions are nested
+  within subjects for statistical inference.
+
+Checkpoints, optimizer/RNG resume state, full predictions, numerical event logs,
+and reusable caches belong in private permanent storage, not Git. The exported
+metrics omit overlap metrics that the deterministic pipeline did not calculate.
+Missing precision/recall values are not zeros.
+
+Metadata uses the release namespace; recorded checkpoint, recipe, prediction,
+and source hashes retain their execution identities. The
+[`release_manifest.json`](runs/det-fix_v1.1.0/release_manifest.json) records the
+original Git blob and SHA-256 alongside each published file's SHA-256. In a
+checkout restored from the private execution-source Git bundle, retrieve exact
+original bytes with `git cat-file blob <source_git_blob>`. `archive://`
+and `archive-cache://` identify private archive locations, not public downloads.
+Publication views cannot resume training. Use execution revision `e61a3f9`
+with the unchanged private artifacts to reuse archived checkpoints; new runs
+use the `v1.1.0` metadata schema and require a new experiment ID.
+
+For a **new** deterministic experiment, use a new ID; never overwrite the recorded run:
+
+```bash
+export EXPERIMENT_ID=det-fix_v1.1.0_NEW_RUN_ID
+export ATLAS_DATA_ROOT=/path/to/ATLAS_BIDS
+export EXPERIMENT_OUTPUT_ROOT=/path/to/permanent/outputs
+bash scripts/reproducibility/pace_full_run.sh
+```
+
+The launcher is PACE-specific and uses `~/scratch` for regenerable arrays.
+`python3 scripts/run_reprod_experiment.py --help` documents individual stages
+and explicit roots. The commands below document the preserved legacy entrypoints;
+omitting an experiment definition selects historical preprocessing and sampling.
 
 ## Architecture and implementation attribution
 
@@ -97,7 +160,7 @@ python scripts/train_base_cnn.py \
   --num_workers 0
 ```
 
-### Example: Linux CUDA paper configuration (one fold, AMP)
+### Example: Linux CUDA legacy configuration (one fold, AMP)
 ```
 # Batch size is per DDP process: 1 x 2 processes x 1 accumulation step = 2 global.
 torchrun --nproc_per_node=2 scripts/train_base_cnn.py \
@@ -128,7 +191,8 @@ For the artifact-augmented paper condition, append:
 --augment motion_consistent --augment_frac 0.5
 ```
 
-The all-model/fold paper runner is `scripts/run_exp_kfold.sh`.
+The legacy all-model/fold runner is `scripts/run_exp_kfold.sh`. Use
+`scripts/reproducibility/pace_full_run.sh` for the `v1.1.0` experiment protocol.
 
 ## Inference (BIDS-derivatives output)
 Predictions are written to:
@@ -194,9 +258,11 @@ python -m unittest discover -s tests -v
 ## Notes
 - Public test labels are hidden; evaluate locally on dev/heldout from `data/train`.
 
-## Lab Runbook (Linux CUDA)
-Install the pinned environment, validate inputs, and inspect the complete paper
-matrix before launching it:
+## Legacy lab runbook (Linux CUDA)
+The following commands use the historical entrypoints. For the `v1.1.0` protocol,
+use the explicit experiment launcher under Current results and reproduction.
+Install the pinned environment, validate inputs, and inspect the complete matrix
+before launching the legacy runner:
 
 ```
 export ATLAS_DATA_ROOT=/path/to/ATLAS_BIDS
@@ -226,4 +292,3 @@ Notes:
   batch size is already 1.
 - The paper fold definitions are versioned under `splits/`; do not regenerate them.
 - Checkpoints and NIfTI predictions are intentionally excluded from Git.
-- Machine-specific paths in retained historical summaries use `<REPO_ROOT>`.

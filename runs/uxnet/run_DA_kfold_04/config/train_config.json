@@ -1,9 +1,9 @@
 {
   "args": {
-    "data_root": "/data/cs_courses/neuroimaging/atlas_clean/data",
-    "gt_deriv": "/data/cs_courses/neuroimaging/atlas_clean/data/train/derivatives/ATLAS",
-    "run_dir": "runs/uxnet/run_DA_kfold_04",
-    "splits_json": "splits/cv/atlas_5fold_lesion_quartile_excluding_known_issues.json",
+    "data_root": "data",
+    "gt_deriv": "data/train/derivatives/ATLAS",
+    "run_dir": "archive://det-fix_v1.1.0/checkpoints/uxnet/augmented/fold-3",
+    "splits_json": "splits/atlas_5fold_lesion_quartile_excluding_known_issues.json",
     "cv_fold": 3,
     "make_splits": false,
     "max_epochs": 45,
@@ -22,7 +22,7 @@
     "pin_memory": true,
     "val_interval": 1,
     "patience": 10,
-    "seed": 9001,
+    "seed": 8367423012533796112,
     "amp": true,
     "numerics_debug": true,
     "numerics_debug_hooks": false,
@@ -30,10 +30,17 @@
     "numerics_debug_topk": 8,
     "loss": "dicece",
     "augment": "motion_consistent",
-    "augment_frac": 0.5
+    "augment_frac": 0.5,
+    "experiment_definition": "archive://det-fix_v1.1.0/definition/experiment.json",
+    "experiment_fold": 3,
+    "experiment_training_regime": "augmented",
+    "normalization_mode": "artifact_then_normalize",
+    "deterministic_resume": false,
+    "experiment_memory_mode": "high",
+    "experiment_cache_root": "archive-cache://det-fix_v1.1.0"
   },
   "ddp_find_unused_parameters": false,
-  "git_commit": "0f4305c652d64914baabc49633fb09322d8fd7bd",
+  "git_commit": "086d957ff0973643ded5c6e49c9e62a2225b3fc8",
   "model_name": "uxnet",
   "split_resolution": {
     "format": "cv",
@@ -50,5 +57,87 @@
       "split_key_used": "val_ids",
       "split_key_reason": "CV fold 3: key 'val_ids'"
     }
-  }
+  },
+  "experiment_metadata": {
+    "experiment_id": "det-fix_v1.1.0",
+    "generation": "det_fix_experiment_v1_1_0",
+    "model": "uxnet",
+    "model_configuration_id": "8497110af878633e475452d9d2eb4f6203ad14048b9b08c79d61adb6ae09a5c1",
+    "fold": 3,
+    "training_regime": "augmented",
+    "normalization_mode": "artifact_then_normalize",
+    "preprocessing_version": "atlas.det-fix_v1.1.0.preprocessing",
+    "fold_definition_id": "0a7d5f4b1db5106b22172b05472c63c3e6cf76490aeeed9fbeb61c0231b76dcd",
+    "global_seed": 9001,
+    "training_run_seed": 8367423012533796112,
+    "checkpoint_selection": {
+      "augmentation": false,
+      "best_rule": "strictly_greater_than_previous_best",
+      "dice_epsilon": 1e-06,
+      "early_stopping_metric": "same_clean_validation_dice",
+      "identical_across_training_regimes": true,
+      "metric": "mean_subject_binary_dice",
+      "subjects": "original_fold_clean_validation_only",
+      "threshold": 0.5,
+      "threshold_comparison": ">"
+    },
+    "numerical_policy": {
+      "amp": true,
+      "collective_decisions": true,
+      "fallback_buffers": "restore_pre_forward_before_replay",
+      "fallback_rng": "replay_pre_forward_restore_post_amp",
+      "fallback_scaler": "unscaled_fp32_update_freeze_scale_and_growth_tracker",
+      "nonfinite_amp_forward": "retry_same_batch_fp32",
+      "nonfinite_fp32_forward": "fail",
+      "nonfinite_model_state": "fail"
+    }
+  },
+  "immutable_training_request": {
+    "max_epochs": 45,
+    "batch_size": 1,
+    "patch_size": [
+      128,
+      128,
+      128
+    ],
+    "patches_per_volume": 8,
+    "lesion_prob": 0.7,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "accum_steps": 1,
+    "val_interval": 1,
+    "patience": 10,
+    "seed": 8367423012533796112,
+    "amp": true,
+    "loss": "dicece",
+    "augment": "motion_consistent",
+    "augment_frac": 0.5,
+    "experiment_fold": 3,
+    "experiment_training_regime": "augmented",
+    "normalization_mode": "artifact_then_normalize",
+    "experiment_id": "det-fix_v1.1.0",
+    "split_sha256": "aaefd207a7c8d168dbf0c0bcdf41122a83fadaeb4d5010f6f17c0ba0a42b486c",
+    "checkpoint_selection": {
+      "augmentation": false,
+      "best_rule": "strictly_greater_than_previous_best",
+      "dice_epsilon": 1e-06,
+      "early_stopping_metric": "same_clean_validation_dice",
+      "identical_across_training_regimes": true,
+      "metric": "mean_subject_binary_dice",
+      "subjects": "original_fold_clean_validation_only",
+      "threshold": 0.5,
+      "threshold_comparison": ">"
+    },
+    "numerical_policy": {
+      "amp": true,
+      "collective_decisions": true,
+      "fallback_buffers": "restore_pre_forward_before_replay",
+      "fallback_rng": "replay_pre_forward_restore_post_amp",
+      "fallback_scaler": "unscaled_fp32_update_freeze_scale_and_growth_tracker",
+      "nonfinite_amp_forward": "retry_same_batch_fp32",
+      "nonfinite_fp32_forward": "fail",
+      "nonfinite_model_state": "fail"
+    }
+  },
+  "publication_view": true
 }

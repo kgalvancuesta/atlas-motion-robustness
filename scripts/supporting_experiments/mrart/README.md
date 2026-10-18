@@ -4,6 +4,13 @@ This directory consolidates MR-ART-specific execution, validation, and paper
 analysis. Shared model builders and TorchIO augmentation definitions remain in
 the repository-level `scripts/` directory.
 
+Current fold-level metrics are under
+`server_reports/det-fix_v1.1.0/fold_lcc_stats/`. They cover all four model
+families, both training conditions, five folds, and 140 complete triplets
+(16,800 rows). These metrics were exported from the full-volume pipeline in
+`scripts/reproducibility/mrart.py`; the entrypoints below preserve the legacy
+analysis workflow. Source and input-array SHA-256 values are retained in the CSV.
+
 Live scripts:
 
 - `scripts/run_mrart_negative_control.sh` and
@@ -23,5 +30,5 @@ Live scripts:
 Local MRI inputs and inference outputs belong under `data/` and `runs/`. The
 augmentation validator writes local comparisons under the Git-ignored
 `outputs/supporting_experiments/mrart/` tree. The
-timestamped `csv/` and `server_reports/` directories here are retained
-lightweight evidence; paths recorded inside them describe the original runs.
+versioned `csv/` and `server_reports/` directories here contain lightweight
+evidence. Source and checkpoint hashes identify the archived execution artifacts.

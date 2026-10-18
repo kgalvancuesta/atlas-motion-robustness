@@ -102,7 +102,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path(
             "scripts/supporting_experiments/mrart/server_reports/"
-            "20260703_mrart_paper_stats/fold_lcc_stats/mrart_fold_lcc_stats_long.csv"
+            "det-fix_v1.1.0/fold_lcc_stats/mrart_fold_lcc_stats_long.csv"
         ),
         help="MR-ART fold-level no-output rerun statistics CSV.",
     )
@@ -924,13 +924,17 @@ def normalize_mrart(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def validate_mrart(df: pd.DataFrame) -> dict[str, Any]:
-    expected_arch = {"mednext", "swin_unetr"}
+    expected_arch = {"base_cnn", "uxnet", "mednext", "swin_unetr"}
     expected_training = {"standard", "augmented"}
     expected_acq = {"standard", "headmotion1", "headmotion2"}
     status_counts = df["status"].astype(str).value_counts().to_dict()
-    return {
+    qc = {
         "row_count": int(len(df)),
-        "expected_row_count": 8400,
+        "expected_row_count": 16800,
+        "unique_subject_count": int(df["subject_id"].nunique()),
+        "missing_architectures": sorted(expected_arch - set(df["architecture"])),
+        "duplicate_prediction_keys": int(df.duplicated(["architecture", "training_condition", "fold", "subject_id", "acquisition_type"]).sum()),
+        "complete_group_count": int(df.groupby(["architecture", "training_condition", "fold", "acquisition_type"])["subject_id"].nunique().eq(140).sum()),
         "status_counts": status_counts,
         "non_success_rows": int((df["status"].astype(str) != "success").sum()),
         "architectures": sorted(set(df["architecture"].astype(str))),
@@ -943,6 +947,15 @@ def validate_mrart(df: pd.DataFrame) -> dict[str, Any]:
         "threshold_values": sorted(float(x) for x in df["threshold"].dropna().unique()),
         "invalid_voxel_volume_rows": int((~np.isfinite(df["voxel_volume_mm3"]) | (df["voxel_volume_mm3"] <= 0)).sum()),
     }
+    if (qc["row_count"] != qc["expected_row_count"]
+            or qc["unique_subject_count"] != 140 or qc["folds"] != list(range(5))
+            or qc["threshold_values"] != [0.5]
+            or qc["missing_architectures"] or qc["duplicate_prediction_keys"]
+            or qc["complete_group_count"] != 120
+            or any(qc[key] for key in ["non_success_rows", "unexpected_architecture_rows",
+                "unexpected_training_rows", "unexpected_acquisition_rows", "invalid_voxel_volume_rows"])):
+        raise ValueError(f"Incomplete or invalid deterministic MR-ART matrix: {qc}")
+    return qc
 
 
 def build_mrart_motion(df: pd.DataFrame, n_bootstrap: int, rng: np.random.Generator, source_csv: Path) -> pd.DataFrame:
@@ -1405,7 +1418,7 @@ def main() -> None:
         "Between-architecture inference is paired over held-out subjects for fixed checkpoints; it does not estimate repeated-seed or retraining variability."
     )
     if int(mrart_qc["row_count"]) != int(mrart_qc["expected_row_count"]):
-        warnings.append("MR-ART fold CSV row count differs from expected 8400.")
+        warnings.append("MR-ART fold CSV row count differs from expected 16800.")
     if int(mrart_qc["non_success_rows"]) != 0:
         warnings.append("MR-ART fold CSV contains non-success rows.")
 

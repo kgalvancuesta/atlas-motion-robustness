@@ -1,6 +1,6 @@
 # CV Metrics Summary
 
-- Model directory: `<REPO_ROOT>/runs/mednext`
+- Model directory: `runs/mednext`
 - Run prefix: `run_kfold`
 - Expected pooled test subjects: `653`
 - Warnings: `0`
@@ -9,21 +9,21 @@
 
 | Fold | Test Subjects | Clean Dice | Augmented Dice | Robustness Delta |
 | --- | --- | --- | --- | --- |
-| 0 | 131 | 0.5198 | 0.4678 | 0.0520 |
-| 1 | 131 | 0.5092 | 0.4766 | 0.0327 |
-| 2 | 131 | 0.5297 | 0.4825 | 0.0472 |
-| 3 | 130 | 0.5349 | 0.4936 | 0.0413 |
-| 4 | 130 | 0.5853 | 0.5410 | 0.0443 |
+| 0 | 131 | 0.5210 | 0.4832 | 0.0378 |
+| 1 | 131 | 0.5038 | 0.4424 | 0.0615 |
+| 2 | 131 | 0.5498 | 0.5068 | 0.0430 |
+| 3 | 130 | 0.5562 | 0.5301 | 0.0261 |
+| 4 | 130 | 0.5716 | 0.5348 | 0.0368 |
 
 ## Fold-level Aggregates
 
 | Metric | Clean | Augmented |
 | --- | --- | --- |
-| dice | 0.5358 +/- 0.0262 | 0.4923 +/- 0.0257 |
-| jaccard | 0.4214 +/- 0.0221 | 0.3802 +/- 0.0209 |
-| precision | 0.6852 +/- 0.0506 | 0.6271 +/- 0.0450 |
-| recall | 0.5489 +/- 0.0472 | 0.5033 +/- 0.0458 |
-| abs_volume_diff_ratio | 2.5979 +/- 3.4413 | 2.0913 +/- 2.1287 |
+| dice | 0.5405 +/- 0.0246 | 0.4995 +/- 0.0340 |
+| jaccard | NA | NA |
+| precision | NA | NA |
+| recall | NA | NA |
+| abs_volume_diff_ratio | NA | NA |
 
 ## Coverage Checks
 

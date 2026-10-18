@@ -11,5 +11,6 @@ inference pipeline live here.
   MR-ART results.
 
 Each experiment keeps executable code under its own `scripts/` directory.
-Timestamped CSV, validation, and server-report directories are retained
-scientific evidence; their recorded historical paths should not be rewritten.
+The `det-fix_v1.1.0` CSV and server-report directories contain the `v1.1.0` results.
+Metadata uses release names and repository-relative paths. Original execution
+bytes and source hashes are indexed in `runs/det-fix_v1.1.0/release_manifest.json`.
